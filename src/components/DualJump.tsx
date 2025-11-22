@@ -180,7 +180,7 @@ export function DualJump() {
     const rightPlatformCount = 100;
     for (let i = 1; i <= rightPlatformCount; i++) {
       const y =
-        GAME_HEIGHT - 100 - i * 80 + (Math.random() * 30 - 15);
+        GAME_HEIGHT - 90 - i * 80 + (Math.random() * 30 - 15);
       const x =
         HALF_WIDTH + Math.random() * (HALF_WIDTH - 110) + 10;
 
@@ -259,42 +259,54 @@ export function DualJump() {
     if (tupitOn && c.side === "right") return true; // right side becomes good after TUPIT
     return false;
   };
-const activateTupit = () => {
-  setTupitActivated((alreadyOn) => {
-    if (alreadyOn) return alreadyOn; // only once
+    const activateTupit = () => {
+      setTupitActivated((alreadyOn) => {
+        if (alreadyOn) return alreadyOn; // only once
 
-    // Add extra good collectibles on the right platforms
-    setCollectibles((prevCollectibles) => {
-      const newCollectibles = [...prevCollectibles];
+        const rightPlayer = rightPlayerRef.current;
 
-      // simple pattern: every 3rd right platform gets a good item
-      const goodTypes: ("book" | "money" | "food")[] = [
-        "book",
-        "money",
-        "food",
-      ];
+        setCollectibles((prev) => {
+          const newCollectibles = [...prev];
 
-      platforms
-        .filter((p) => p.side === "right")
-        .forEach((p, idx) => {
-          if (idx % 3 !== 0) return; // spacing
+          platforms
+            .filter(
+              (p) =>
+                p.side === "right" &&
+                p.y < rightPlayer.y - 80 // only platforms ABOVE current player
+            )
+            .forEach((p, index) => {
+              // e.g., every 3rd platform
+              if (index % 3 !== 0) return;
 
-          newCollectibles.push({
-            x: p.x + p.width / 2 - 15,
-            y: p.y - 40,
-            type: goodTypes[idx % goodTypes.length],
-            id: collectibleIdCounter.current++,
-            side: "right",
-            collected: false,
-          });
+              // center the book above the platform, same pattern as others
+              const bookX = p.x + p.width / 2 - 15;
+              const bookY = p.y - 40;
+
+              // don't place if something is already there
+              const overlapsExisting = newCollectibles.some(
+                (c) =>
+                  c.side === "right" &&
+                  Math.abs(c.x - bookX) < 10 &&
+                  Math.abs(c.y - bookY) < 10
+              );
+              if (overlapsExisting) return;
+
+              newCollectibles.push({
+                x: bookX,
+                y: bookY,
+                type: "book", // ONLY books on hard path
+                id: collectibleIdCounter.current++,
+                side: "right",
+                collected: false,
+              });
+            });
+
+          return newCollectibles;
         });
 
-      return newCollectibles;
-    });
-
-    return true;
-  });
-};
+        return true;
+      });
+    };
 
 
   // Game loop
@@ -586,17 +598,46 @@ setCollectibles((prev) =>
     setTupitActivated(false);
   };
 
-  const CollectibleIcon = ({ type }: { type: string }) => {
+  const CollectibleIcon = ({
+  type,
+  side,
+}: {
+  type: string;
+  side: "left" | "right";
+}) => {
   const iconProps = { size: 28, strokeWidth: 1.5 };
+
+  const isRightSide = side === "right";
+
   switch (type) {
     case "book":
-      return <BookOpen {...iconProps} className="text-black" />;
+      return (
+        <BookOpen
+          {...iconProps}
+          className={isRightSide ? "text-white" : "text-black"}
+        />
+      );
     case "money":
-      return <DollarSign {...iconProps} className="text-black" />;
+      return (
+        <DollarSign
+          {...iconProps}
+          className="text-black"
+        />
+      );
     case "food":
-      return <Apple {...iconProps} className="text-black" />;
+      return (
+        <Apple
+          {...iconProps}
+          className="text-black"
+        />
+      );
     case "gun":
-      return <Skull {...iconProps} className="text-white" />;
+      return (
+        <Skull
+          {...iconProps}
+          className="text-white"
+        />
+      );
     case "drug":
       return (
         <Circle
@@ -606,9 +647,19 @@ setCollectibles((prev) =>
         />
       );
     case "police":
-      return <Car {...iconProps} className="text-white" />;
+      return (
+        <Car
+          {...iconProps}
+          className="text-white"
+        />
+      );
     case "baby":
-      return <Baby {...iconProps} className="text-white" />;
+      return (
+        <Baby
+          {...iconProps}
+          className="text-white"
+        />
+      );
     default:
       return null;
   }
@@ -708,7 +759,7 @@ setCollectibles((prev) =>
                       top: screenY,
                     }}
                   >
-                    <CollectibleIcon type={collectible.type} />
+                    <CollectibleIcon type={collectible.type} side="left" />
                   </div>
                 );
               })}
@@ -862,7 +913,7 @@ setCollectibles((prev) =>
                       top: screenY,
                     }}
                   >
-                <CollectibleIcon type={collectible.type} isRightSideGood={tupitActivated} />
+                <CollectibleIcon type={collectible.type} side="right" />
                   </div>
                 );
               })}

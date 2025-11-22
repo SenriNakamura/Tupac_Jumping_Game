@@ -620,7 +620,7 @@ setCollectibles((prev) =>
     <div className="flex flex-col items-center gap-4">
       {/* Title */}
       <h1 className="tracking-widest text-gray-900">
-        DUAL JUMP
+        STILL I RISE
       </h1>
 
       {/* Game Canvas */}

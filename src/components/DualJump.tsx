@@ -403,7 +403,12 @@ export function DualJump() {
 
       // Death conditions
       // 1. Fell off the bottom of the screen
-      if (player.y > GAME_HEIGHT + 100) {
+      const cameraY =
+        player.side === "left" ? leftCameraY.current : rightCameraY.current;
+      const screenY = player.y - cameraY; // position relative to current view
+
+      if (screenY > GAME_HEIGHT + 50) {
+        // 50px margin below frame
         player.lives = 0;
       }
 

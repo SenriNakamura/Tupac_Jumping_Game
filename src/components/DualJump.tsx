@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { BrokenHeart } from "./BrokenHeart";
 import { PlayerStickFigure } from "./PlayerStickFigure";
+import tupitLogo from "../assets/tupit-logo-1920x768.png"; 
 
 
 interface Player {
@@ -81,6 +82,7 @@ const CAMERA_ANCHOR = GAME_HEIGHT * 0.4;
 export function DualJump() {
   const [gameStarted, setGameStarted] = useState(false);
   const [gameOver, setGameOver] = useState(false);
+  const [tupitActivated, setTupitActivated] = useState(false); 
 
   const leftPlayerRef = useRef<Player>({
     x: HALF_WIDTH / 2 - 25,
@@ -252,6 +254,49 @@ export function DualJump() {
     }, 1000);
   };
 
+  const isGoodCollectible = (c: Collectible, tupitOn: boolean): boolean => {
+    if (["book", "money", "food"].includes(c.type)) return true;
+    if (tupitOn && c.side === "right") return true; // right side becomes good after TUPIT
+    return false;
+  };
+const activateTupit = () => {
+  setTupitActivated((alreadyOn) => {
+    if (alreadyOn) return alreadyOn; // only once
+
+    // Add extra good collectibles on the right platforms
+    setCollectibles((prevCollectibles) => {
+      const newCollectibles = [...prevCollectibles];
+
+      // simple pattern: every 3rd right platform gets a good item
+      const goodTypes: ("book" | "money" | "food")[] = [
+        "book",
+        "money",
+        "food",
+      ];
+
+      platforms
+        .filter((p) => p.side === "right")
+        .forEach((p, idx) => {
+          if (idx % 3 !== 0) return; // spacing
+
+          newCollectibles.push({
+            x: p.x + p.width / 2 - 15,
+            y: p.y - 40,
+            type: goodTypes[idx % goodTypes.length],
+            id: collectibleIdCounter.current++,
+            side: "right",
+            collected: false,
+          });
+        });
+
+      return newCollectibles;
+    });
+
+    return true;
+  });
+};
+
+
   // Game loop
   const gameLoop = useCallback(() => {
     if (!gameStarted || gameOver) return;
@@ -410,55 +455,50 @@ export function DualJump() {
     );
 
     // Check collectible collisions
-    setCollectibles((prev) =>
-      prev.map((collectible) => {
-        if (collectible.collected) return collectible;
+setCollectibles((prev) =>
+  prev.map((collectible) => {
+    if (collectible.collected) return collectible;
 
-        const player =
-          collectible.side === "left"
-            ? leftPlayer
-            : rightPlayer;
-        const cameraY =
-          collectible.side === "left"
-            ? leftCameraY.current
-            : rightCameraY.current;
+    const player =
+      collectible.side === "left" ? leftPlayer : rightPlayer;
+    const cameraY =
+      collectible.side === "left"
+        ? leftCameraY.current
+        : rightCameraY.current;
 
-        // Check if player touches collectible
-        if (
-          player.x < collectible.x + 30 &&
-          player.x + player.width > collectible.x &&
-          player.y < collectible.y + 30 &&
-          player.y + player.height > collectible.y
-        ) {
-          // Good collectibles
-          if (
-            ["book", "money", "food"].includes(collectible.type)
-          ) {
-            player.lives = Math.min(player.lives + 1, 5);
-            player.score += 10;
-            addFloatingHeart(
-              collectible.x,
-              collectible.y,
-              true,
-              cameraY,
-            );
-          }
-          // Bad collectibles
-          else {
-            player.lives -= 1;
-            addFloatingHeart(
-              collectible.x,
-              collectible.y,
-              false,
-              cameraY,
-            );
-          }
+    // Check if player touches collectible
+    if (
+      player.x < collectible.x + 30 &&
+      player.x + player.width > collectible.x &&
+      player.y < collectible.y + 30 &&
+      player.y + player.height > collectible.y
+    ) {
+      // Good collectibles
+      if (["book", "money", "food"].includes(collectible.type)) {
+        player.lives = Math.min(player.lives + 1, 5);
+        player.score += 10;
+        addFloatingHeart(
+          collectible.x,
+          collectible.y,
+          true,
+          cameraY,
+        );
+      } else {
+        // Bad collectibles
+        player.lives -= 1;
+        addFloatingHeart(
+          collectible.x,
+          collectible.y,
+          false,
+          cameraY,
+        );
+      }
 
-          return { ...collectible, collected: true };
-        }
-        return collectible;
-      }),
-    );
+      return { ...collectible, collected: true };
+    }
+    return collectible;
+  }),
+);
 
     // Update floating hearts
     setFloatingHearts((prev) =>
@@ -476,7 +516,7 @@ export function DualJump() {
     }
 
     animationFrameId.current = requestAnimationFrame(gameLoop);
-  }, [gameStarted, gameOver, platforms]);
+  }, [gameStarted, gameOver, platforms, tupitActivated]);
 
   useEffect(() => {
     if (gameStarted && !gameOver) {
@@ -543,39 +583,38 @@ export function DualJump() {
     initializeGame();
     setGameOver(false);
     setGameStarted(true);
+    setTupitActivated(false);
   };
 
   const CollectibleIcon = ({ type }: { type: string }) => {
-    const iconProps = { size: 28, strokeWidth: 1.5 };
-    switch (type) {
-      case "book":
-        return (
-          <BookOpen {...iconProps} className="text-black" />
-        );
-      case "money":
-        return (
-          <DollarSign {...iconProps} className="text-black" />
-        );
-      case "food":
-        return <Apple {...iconProps} className="text-black" />;
-      case "gun":
-        return <Skull {...iconProps} className="text-white" />;
-      case "drug":
-        return (
-          <Circle
-            {...iconProps}
-            className="text-white"
-            fill="white"
-          />
-        );
-      case "police":
-        return <Car {...iconProps} className="text-white" />;
-      case "baby":
-        return <Baby {...iconProps} className="text-white" />;
-      default:
-        return null;
-    }
-  };
+  const iconProps = { size: 28, strokeWidth: 1.5 };
+  switch (type) {
+    case "book":
+      return <BookOpen {...iconProps} className="text-black" />;
+    case "money":
+      return <DollarSign {...iconProps} className="text-black" />;
+    case "food":
+      return <Apple {...iconProps} className="text-black" />;
+    case "gun":
+      return <Skull {...iconProps} className="text-white" />;
+    case "drug":
+      return (
+        <Circle
+          {...iconProps}
+          className="text-white"
+          fill="white"
+        />
+      );
+    case "police":
+      return <Car {...iconProps} className="text-white" />;
+    case "baby":
+      return <Baby {...iconProps} className="text-white" />;
+    default:
+      return null;
+  }
+};
+
+
 
   return (
     <div className="flex flex-col items-center gap-4">
@@ -706,23 +745,56 @@ export function DualJump() {
             height: GAME_HEIGHT,
           }}
         >
-          {/* Score and Lives - Top Right */}
-          <div className="absolute top-4 right-4 text-white text-right z-10">
-            <div>Score: {rightPlayerRef.current.score}</div>
-            <div className="flex items-center justify-end gap-1 mt-1">
-              <span>Lives:</span>
-              {Array.from({
-                length: rightPlayerRef.current.lives,
-              }).map((_, i) => (
-                <Heart
-                  key={i}
-                  size={16}
-                  fill="red"
-                  className="text-red-600"
-                />
-              ))}
-            </div>
+          {/* Score, Lives, and TUPIT logo - Top Right */}
+        <div className="absolute top-4 right-4 text-white text-right z-10">
+          <div>Score: {rightPlayerRef.current.score}</div>
+
+          <div className="flex items-center justify-end gap-1 mt-1">
+            <span>Lives:</span>
+            {Array.from({
+              length: rightPlayerRef.current.lives,
+            }).map((_, i) => (
+              <Heart
+                key={i}
+                size={16}
+                fill="red"
+                className="text-red-600"
+              />
+            ))}
           </div>
+
+          {/* Clickable TUPIT logo */}
+          <button
+            type="button"
+            onClick={activateTupit}
+            className="mt-2 flex justify-end w-full"
+            style={{
+              background: "none",
+              border: "none",
+              padding: 0,
+              outline: "none",
+              boxShadow: "none",
+              cursor: "pointer",
+            }}
+          >
+            <img
+              src={tupitLogo}
+              alt="TUPIT logo"
+              className="object-contain transition-all duration-300"
+              style={{
+                height: "34px",
+                width: "auto",
+                opacity: tupitActivated ? 1 : 0.35,
+                filter: tupitActivated
+                  ? "none"
+                  : "grayscale(100%) brightness(60%)",
+                display: "block", // removes inline spacing
+              }}
+            />
+          </button>
+
+
+        </div>
 
           {/* Upward arrow indicator */}
           <div className="absolute bottom-20 left-1/2 -translate-x-1/2 text-gray-600 opacity-30 z-10">
@@ -790,7 +862,7 @@ export function DualJump() {
                       top: screenY,
                     }}
                   >
-                    <CollectibleIcon type={collectible.type} />
+                <CollectibleIcon type={collectible.type} isRightSideGood={tupitActivated} />
                   </div>
                 );
               })}

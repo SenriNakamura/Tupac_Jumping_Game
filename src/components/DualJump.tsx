@@ -15,6 +15,8 @@ import {
   Heart,
 } from "lucide-react";
 import { BrokenHeart } from "./BrokenHeart";
+import { PlayerStickFigure } from "./PlayerStickFigure";
+
 
 interface Player {
   x: number;
@@ -675,16 +677,22 @@ export function DualJump() {
             {/* Left Player */}
             {gameStarted && (
               <div
-                className="absolute bg-black shadow-lg"
+                className="absolute"
                 style={{
                   left: leftPlayerRef.current.x,
-                  top:
-                    leftPlayerRef.current.y -
-                    leftCameraY.current,
+                  top: leftPlayerRef.current.y - leftCameraY.current,
                   width: leftPlayerRef.current.width,
                   height: leftPlayerRef.current.height,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
                 }}
-              />
+              >
+                <PlayerStickFigure
+                  size={leftPlayerRef.current.width * 0.9}
+                  color="black"
+                />
+              </div>
             )}
           </div>
         </div>
@@ -790,16 +798,22 @@ export function DualJump() {
             {/* Right Player */}
             {gameStarted && (
               <div
-                className="absolute bg-white shadow-lg"
+                className="absolute"
                 style={{
                   left: rightPlayerRef.current.x - HALF_WIDTH,
-                  top:
-                    rightPlayerRef.current.y -
-                    rightCameraY.current,
+                  top: rightPlayerRef.current.y - rightCameraY.current,
                   width: rightPlayerRef.current.width,
                   height: rightPlayerRef.current.height,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
                 }}
-              />
+              >
+                <PlayerStickFigure
+                  size={rightPlayerRef.current.width * 0.9}
+                  color="white"
+                />
+              </div>
             )}
           </div>
         </div>

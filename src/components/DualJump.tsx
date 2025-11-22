@@ -159,20 +159,43 @@ export function DualJump() {
       });
 
       // Add good collectibles
+      // Add collectibles on the LEFT side
+      // → mostly good, but VERY rarely a bad one
       if (i % 2 === 0) {
-        const types: ("book" | "money" | "food")[] = [
-          "book",
-          "money",
-          "food",
-        ];
-        newCollectibles.push({
-          x: x + 50,
-          y: y - 40,
-          type: types[Math.floor(Math.random() * types.length)],
-          id: collectibleIdCounter.current++,
-          side: "left",
-          collected: false,
-        });
+        const roll = Math.random(); // 0–1
+
+        // ~5% chance: BAD item on the "good" path
+        if (roll < 0.1) {
+          const badTypes: ("gun" | "drug" | "police" | "baby")[] = [
+            "gun",
+            "drug",
+            "police",
+            "baby",
+          ];
+          newCollectibles.push({
+            x: x + 50,
+            y: y - 40,
+            type: badTypes[Math.floor(Math.random() * badTypes.length)],
+            id: collectibleIdCounter.current++,
+            side: "left",
+            collected: false,
+          });
+        } else {
+          // otherwise: normal good items
+          const goodTypes: ("book" | "money" | "food")[] = [
+            "book",
+            "money",
+            "food",
+          ];
+          newCollectibles.push({
+            x: x + 50,
+            y: y - 40,
+            type: goodTypes[Math.floor(Math.random() * goodTypes.length)],
+            id: collectibleIdCounter.current++,
+            side: "left",
+            collected: false,
+          });
+        }
       }
     }
 
@@ -604,73 +627,45 @@ setCollectibles((prev) =>
   };
 
   const CollectibleIcon = ({
-  type,
-  side,
-}: {
-  type: string;
-  side: "left" | "right";
-}) => {
-  const iconProps = { size: 28, strokeWidth: 1.5 };
+    type,
+    side,
+  }: {
+    type: string;
+    side: "left" | "right";
+  }) => {
+    const iconProps = { size: 28, strokeWidth: 1.5 };
 
-  const isRightSide = side === "right";
+    // left side = white background → icons must be black
+    // right side = dark background → icons must be white
+    const colorClass = side === "left" ? "text-black" : "text-white";
 
-  switch (type) {
-    case "book":
-      return (
-        <BookOpen
-          {...iconProps}
-          className={isRightSide ? "text-white" : "text-black"}
-        />
-      );
-    case "money":
-      return (
-        <DollarSign
-          {...iconProps}
-          className="text-black"
-        />
-      );
-    case "food":
-      return (
-        <Apple
-          {...iconProps}
-          className="text-black"
-        />
-      );
-    case "gun":
-      return (
-        <Skull
-          {...iconProps}
-          className="text-white"
-        />
-      );
-    case "drug":
-      return (
-        <Circle
-          {...iconProps}
-          className="text-white"
-          fill="white"
-        />
-      );
-    case "police":
-      return (
-        <Car
-          {...iconProps}
-          className="text-white"
-        />
-      );
-    case "baby":
-      return (
-        <Baby
-          {...iconProps}
-          className="text-white"
-        />
-      );
-    default:
-      return null;
-  }
-};
+    switch (type) {
+      case "book":
+        return <BookOpen {...iconProps} className={colorClass} />;
 
+      case "money":
+        return <DollarSign {...iconProps} className={colorClass} />;
 
+      case "food":
+        return <Apple {...iconProps} className={colorClass} />;
+
+        // BAD ITEMS
+      case "gun":
+        return <Skull {...iconProps} className={colorClass} />;
+
+      case "drug":
+        return <Circle {...iconProps} className={colorClass} fill={side === "left" ? "black" : "white"} />;
+
+      case "police":
+        return <Car {...iconProps} className={colorClass} />;
+
+      case "baby":
+        return <Baby {...iconProps} className={colorClass} />;
+
+      default:
+        return null;
+    }
+  };
 
   return (
     <div className="flex flex-col items-center gap-4">

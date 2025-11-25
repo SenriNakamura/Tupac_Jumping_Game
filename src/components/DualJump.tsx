@@ -59,6 +59,8 @@ interface Collectible {
   id: number;
   side: "left" | "right";
   collected: boolean;
+  platformId?: number;
+  platformOffsetX?: number;
 }
 
 interface FloatingHeart {
@@ -165,7 +167,7 @@ export function DualJump() {
         const roll = Math.random(); // 0–1
 
         // ~5% chance: BAD item on the "good" path
-        if (roll < 0.5) {
+        if (roll < 0.1) {
           const badTypes: ("gun" | "drug" | "police" | "baby")[] = [
             "gun",
             "drug",
@@ -202,24 +204,26 @@ export function DualJump() {
     // Right side platforms (Hard Path) - harder, moving, extends much higher
     const rightPlatformCount = 100;
     for (let i = 1; i <= rightPlatformCount; i++) {
-      const y =
-        GAME_HEIGHT - 90 - i * 80 + (Math.random() * 30 - 15);
-      const x =
-        HALF_WIDTH + Math.random() * (HALF_WIDTH - 110) + 10;
+      const y = GAME_HEIGHT - 90 - i * 80 + (Math.random() * 30 - 15);
+      const x = HALF_WIDTH + Math.random() * (HALF_WIDTH - 110) + 10;
 
-      newPlatforms.push({
+      const platformId = platformIdCounter.current++;
+      const platform: Platform = {
         x,
         y,
         width: 80 + Math.random() * 30,
         height: 15,
-        id: platformIdCounter.current++,
+        id: platformId,
         side: "right",
         movingOffset: 0,
         movingDirection: Math.random() > 0.5 ? 1 : -1,
         originalX: x,
-      });
+      };
 
-      // Add bad collectibles
+      newPlatforms.push(platform);
+      const collectibleX = x + 30;
+      const collectibleY = y - 40;
+
       if (i % 2 === 1) {
         const types: ("gun" | "drug" | "police" | "baby")[] = [
           "gun",
@@ -228,15 +232,18 @@ export function DualJump() {
           "baby",
         ];
         newCollectibles.push({
-          x: x + 30,
-          y: y - 40,
+          x: collectibleX,
+          y: collectibleY,
           type: types[Math.floor(Math.random() * types.length)],
           id: collectibleIdCounter.current++,
           side: "right",
           collected: false,
+          platformId,
+          platformOffsetX: collectibleX - x, 
         });
       }
     }
+
 
     setPlatforms(newPlatforms);
     setCollectibles(newCollectibles);
@@ -321,6 +328,8 @@ export function DualJump() {
                 id: collectibleIdCounter.current++,
                 side: "right",
                 collected: false,
+                platformId: p.id,
+                platformOffsetX: bookX - p.x,
               });
             });
 
@@ -469,35 +478,63 @@ export function DualJump() {
     // if (rightCameraY.current < 0) rightCameraY.current = 0;
 
     // Update moving platforms
-    setPlatforms((prev) =>
-      prev.map((platform) => {
-        if (
-          platform.side === "right" &&
-          platform.movingOffset !== undefined &&
-          platform.originalX !== undefined
-        ) {
-          const newOffset =
-            platform.movingOffset +
-            platform.movingDirection! * 1;
+    // Update moving platforms AND move attached collectibles
+        // Update moving platforms and sync attached collectibles
+    const platformById: Record<number, Platform> = {};
 
-          if (Math.abs(newOffset) > 40) {
-            platform.movingDirection! *= -1;
-          }
+    const updatedPlatforms = platforms.map((platform) => {
+      if (
+        platform.side === "right" &&
+        platform.movingOffset !== undefined &&
+        platform.originalX !== undefined
+      ) {
+        const newOffset = platform.movingOffset + platform.movingDirection! * 1;
+        let newDirection = platform.movingDirection!;
 
-          return {
-            ...platform,
-            movingOffset: newOffset,
-            x: platform.originalX + newOffset,
-          };
+        if (Math.abs(newOffset) > 40) {
+          newDirection *= -1;
         }
-        return platform;
+
+        const newX = platform.originalX + newOffset;
+        const updated = {
+          ...platform,
+          movingOffset: newOffset,
+          movingDirection: newDirection,
+          x: newX,
+        };
+        platformById[updated.id] = updated;
+        return updated;
+      }
+
+      platformById[platform.id] = platform;
+      return platform;
+    });
+
+    setPlatforms(updatedPlatforms);
+
+    // Lock collectibles to their platform x position
+    setCollectibles((prev) =>
+      prev.map((c) => {
+        if (
+          c.side === "right" &&
+          c.platformId != null &&
+          c.platformOffsetX != null
+        ) {
+          const plat = platformById[c.platformId];
+          if (plat) {
+            return { ...c, x: plat.x + c.platformOffsetX };
+          }
+        }
+        return c;
       }),
     );
 
+
+
     // Check collectible collisions
-setCollectibles((prev) =>
-  prev.map((collectible) => {
-    if (collectible.collected) return collectible;
+    setCollectibles((prev) =>
+      prev.map((collectible) => {
+      if (collectible.collected) return collectible;
 
     const player =
       collectible.side === "left" ? leftPlayer : rightPlayer;

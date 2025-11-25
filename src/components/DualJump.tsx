@@ -17,7 +17,7 @@ import {
 import { BrokenHeart } from "./BrokenHeart";
 import { PlayerStickFigure } from "./PlayerStickFigure";
 import tupitLogo from "../assets/tupit-logo-1920x768.png"; 
-
+import { SyringeIcon } from "@/components/ui/syringe-icon";
 
 interface Player {
   x: number;
@@ -165,7 +165,7 @@ export function DualJump() {
         const roll = Math.random(); // 0–1
 
         // ~5% chance: BAD item on the "good" path
-        if (roll < 0.1) {
+        if (roll < 0.5) {
           const badTypes: ("gun" | "drug" | "police" | "baby")[] = [
             "gun",
             "drug",
@@ -654,7 +654,7 @@ setCollectibles((prev) =>
         return <Skull {...iconProps} className={colorClass} />;
 
       case "drug":
-        return <Circle {...iconProps} className={colorClass} fill={side === "left" ? "black" : "white"} />;
+        return <SyringeIcon size={28} side={side} />;
 
       case "police":
         return <Car {...iconProps} className={colorClass} />;

@@ -1076,3 +1076,7 @@ html {
   syntax: "*";
   inherits: false
 }
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

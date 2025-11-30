@@ -21,8 +21,8 @@ interface Block {
 }
 
 const GRAVITY = 0.6;
-const JUMP_FORCE = -15;
-const MOVE_SPEED = 5;
+const JUMP_FORCE = -12;
+const MOVE_SPEED = 4;
 const GAME_WIDTH = 800;
 const GAME_HEIGHT = 600;
 

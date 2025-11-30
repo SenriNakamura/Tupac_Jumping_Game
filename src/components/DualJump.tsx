@@ -16,8 +16,9 @@ import {
 } from "lucide-react";
 import { BrokenHeart } from "./BrokenHeart";
 import { PlayerStickFigure } from "./PlayerStickFigure";
-import tupitLogo from "../assets/tupit-logo-1920x768.png"; 
+import tupitLogo from "../assets/tupit-logo-1920x768.png";
 import { SyringeIcon } from "@/components/ui/syringe-icon";
+import { StillIRiseExplanationPage } from "./StillIRiseExplanation";
 
 interface Player {
   x: number;
@@ -48,14 +49,7 @@ interface Platform {
 interface Collectible {
   x: number;
   y: number;
-  type:
-    | "book"
-    | "money"
-    | "food"
-    | "gun"
-    | "drug"
-    | "police"
-    | "baby";
+  type: "book" | "money" | "food" | "gun" | "drug" | "police" | "baby";
   id: number;
   side: "left" | "right";
   collected: boolean;
@@ -69,7 +63,7 @@ interface FloatingHeart {
   id: number;
   isGood: boolean;
   opacity: number;
-  time: number; // Track animation time for effects
+  time: number;
 }
 
 const GRAVITY = 0.5;
@@ -84,7 +78,8 @@ const CAMERA_ANCHOR = GAME_HEIGHT * 0.4;
 export function DualJump() {
   const [gameStarted, setGameStarted] = useState(false);
   const [gameOver, setGameOver] = useState(false);
-  const [tupitActivated, setTupitActivated] = useState(false); 
+  const [tupitActivated, setTupitActivated] = useState(false);
+  const [showInfo, setShowInfo] = useState(false);
 
   const leftPlayerRef = useRef<Player>({
     x: HALF_WIDTH / 2 - 25,
@@ -118,12 +113,8 @@ export function DualJump() {
   const rightCameraY = useRef(0);
 
   const [platforms, setPlatforms] = useState<Platform[]>([]);
-  const [collectibles, setCollectibles] = useState<
-    Collectible[]
-  >([]);
-  const [floatingHearts, setFloatingHearts] = useState<
-    FloatingHeart[]
-  >([]);
+  const [collectibles, setCollectibles] = useState<Collectible[]>([]);
+  const [floatingHearts, setFloatingHearts] = useState<FloatingHeart[]>([]);
   const keysPressed = useRef<Set<string>>(new Set());
   const animationFrameId = useRef<number>();
   const platformIdCounter = useRef(0);
@@ -145,7 +136,7 @@ export function DualJump() {
       side: "left",
     });
 
-    // Left side platforms (Good Path) - evenly spaced, easy, extends much higher
+    // Left side platforms (Good Path)
     const leftPlatformCount = 100;
     for (let i = 1; i <= leftPlatformCount; i++) {
       const y = GAME_HEIGHT - 100 - i * 80;
@@ -160,13 +151,9 @@ export function DualJump() {
         side: "left",
       });
 
-      // Add good collectibles
-      // Add collectibles on the LEFT side
-      // → mostly good, but VERY rarely a bad one
       if (i % 2 === 0) {
-        const roll = Math.random(); // 0–1
+        const roll = Math.random();
 
-        // ~5% chance: BAD item on the "good" path
         if (roll < 0.1) {
           const badTypes: ("gun" | "drug" | "police" | "baby")[] = [
             "gun",
@@ -183,12 +170,7 @@ export function DualJump() {
             collected: false,
           });
         } else {
-          // otherwise: normal good items
-          const goodTypes: ("book" | "money" | "food")[] = [
-            "book",
-            "money",
-            "food",
-          ];
+          const goodTypes: ("book" | "money" | "food")[] = ["book", "money", "food"];
           newCollectibles.push({
             x: x + 50,
             y: y - 40,
@@ -201,7 +183,7 @@ export function DualJump() {
       }
     }
 
-    // Right side platforms (Hard Path) - harder, moving, extends much higher
+    // Right side platforms (Hard Path)
     const rightPlatformCount = 100;
     for (let i = 1; i <= rightPlatformCount; i++) {
       const y = GAME_HEIGHT - 90 - i * 80 + (Math.random() * 30 - 15);
@@ -239,32 +221,27 @@ export function DualJump() {
           side: "right",
           collected: false,
           platformId,
-          platformOffsetX: collectibleX - x, 
+          platformOffsetX: collectibleX - x,
         });
       }
     }
-
 
     setPlatforms(newPlatforms);
     setCollectibles(newCollectibles);
   }, []);
 
-  // Check collision between player and platform
-  const checkCollision = (
-    player: Player,
-    platform: Platform,
-  ): boolean => {
+  // Collision with platform
+  const checkCollision = (player: Player, platform: Platform): boolean => {
     return (
       player.x < platform.x + platform.width &&
       player.x + player.width > platform.x &&
       player.y + player.height <= platform.y + 5 &&
-      player.y + player.height + player.velocityY >=
-        platform.y &&
+      player.y + player.height + player.velocityY >= platform.y &&
       player.velocityY >= 0
     );
   };
 
-  // Add floating heart animation
+  // Floating heart
   const addFloatingHeart = (
     x: number,
     y: number,
@@ -278,68 +255,57 @@ export function DualJump() {
     ]);
 
     setTimeout(() => {
-      setFloatingHearts((prev) =>
-        prev.filter((h) => h.id !== id),
-      );
+      setFloatingHearts((prev) => prev.filter((h) => h.id !== id));
     }, 1000);
   };
 
-  const isGoodCollectible = (c: Collectible, tupitOn: boolean): boolean => {
-    if (["book", "money", "food"].includes(c.type)) return true;
-    if (tupitOn && c.side === "right") return true; // right side becomes good after TUPIT
-    return false;
-  };
-    const activateTupit = () => {
-      setTupitActivated((alreadyOn) => {
-        if (alreadyOn) return alreadyOn; // only once
+  const activateTupit = () => {
+    setTupitActivated((alreadyOn) => {
+      if (alreadyOn) return alreadyOn;
 
-        const rightPlayer = rightPlayerRef.current;
+      const rightPlayer = rightPlayerRef.current;
 
-        setCollectibles((prev) => {
-          const newCollectibles = [...prev];
+      setCollectibles((prev) => {
+        const newCollectibles = [...prev];
 
-          platforms
-            .filter(
-              (p) =>
-                p.side === "right" &&
-                p.y < rightPlayer.y - 80 // only platforms ABOVE current player
-            )
-            .forEach((p, index) => {
-              // e.g., every 3rd platform
-              if (index % 3 !== 0) return;
+        platforms
+          .filter(
+            (p) =>
+              p.side === "right" &&
+              p.y < rightPlayer.y - 80, // above player
+          )
+          .forEach((p, index) => {
+            if (index % 3 !== 0) return;
 
-              // center the book above the platform, same pattern as others
-              const bookX = p.x + p.width / 2 - 15;
-              const bookY = p.y - 40;
+            const bookX = p.x + p.width / 2 - 15;
+            const bookY = p.y - 40;
 
-              // don't place if something is already there
-              const overlapsExisting = newCollectibles.some(
-                (c) =>
-                  c.side === "right" &&
-                  Math.abs(c.x - bookX) < 10 &&
-                  Math.abs(c.y - bookY) < 10
-              );
-              if (overlapsExisting) return;
+            const overlapsExisting = newCollectibles.some(
+              (c) =>
+                c.side === "right" &&
+                Math.abs(c.x - bookX) < 10 &&
+                Math.abs(c.y - bookY) < 10,
+            );
+            if (overlapsExisting) return;
 
-              newCollectibles.push({
-                x: bookX,
-                y: bookY,
-                type: "book", // ONLY books on hard path
-                id: collectibleIdCounter.current++,
-                side: "right",
-                collected: false,
-                platformId: p.id,
-                platformOffsetX: bookX - p.x,
-              });
+            newCollectibles.push({
+              x: bookX,
+              y: bookY,
+              type: "book",
+              id: collectibleIdCounter.current++,
+              side: "right",
+              collected: false,
+              platformId: p.id,
+              platformOffsetX: bookX - p.x,
             });
+          });
 
-          return newCollectibles;
-        });
-
-        return true;
+        return newCollectibles;
       });
-    };
 
+      return true;
+    });
+  };
 
   // Game loop
   const gameLoop = useCallback(() => {
@@ -348,83 +314,58 @@ export function DualJump() {
     const leftPlayer = leftPlayerRef.current;
     const rightPlayer = rightPlayerRef.current;
 
-    // Handle left player controls (A/W/D)
-    if (
-      keysPressed.current.has("a") ||
-      keysPressed.current.has("A")
-    ) {
+    // Left controls
+    if (keysPressed.current.has("a") || keysPressed.current.has("A")) {
       leftPlayer.velocityX = -MOVE_SPEED;
-    } else if (
-      keysPressed.current.has("d") ||
-      keysPressed.current.has("D")
-    ) {
+    } else if (keysPressed.current.has("d") || keysPressed.current.has("D")) {
       leftPlayer.velocityX = MOVE_SPEED;
     } else {
       leftPlayer.velocityX = 0;
     }
 
     if (
-      (keysPressed.current.has("w") ||
-        keysPressed.current.has("W")) &&
+      (keysPressed.current.has("w") || keysPressed.current.has("W")) &&
       !leftPlayer.isJumping
     ) {
       leftPlayer.velocityY = JUMP_FORCE;
       leftPlayer.isJumping = true;
     }
 
-    // Handle right player controls (J/I/L)
-    if (
-      keysPressed.current.has("j") ||
-      keysPressed.current.has("J")
-    ) {
+    // Right controls
+    if (keysPressed.current.has("j") || keysPressed.current.has("J")) {
       rightPlayer.velocityX = -MOVE_SPEED;
-    } else if (
-      keysPressed.current.has("l") ||
-      keysPressed.current.has("L")
-    ) {
+    } else if (keysPressed.current.has("l") || keysPressed.current.has("L")) {
       rightPlayer.velocityX = MOVE_SPEED;
     } else {
       rightPlayer.velocityX = 0;
     }
 
     if (
-      (keysPressed.current.has("i") ||
-        keysPressed.current.has("I")) &&
+      (keysPressed.current.has("i") || keysPressed.current.has("I")) &&
       !rightPlayer.isJumping
     ) {
       rightPlayer.velocityY = JUMP_FORCE;
       rightPlayer.isJumping = true;
     }
 
-    // Update physics for both players
+    // Physics for both players
     [leftPlayer, rightPlayer].forEach((player) => {
-      // Apply gravity
       player.velocityY += GRAVITY;
-
-      // Update position
       player.x += player.velocityX;
       player.y += player.velocityY;
 
-      // Keep player within their half
       const minX = player.side === "left" ? 0 : HALF_WIDTH;
-      const maxX =
-        player.side === "left" ? HALF_WIDTH : GAME_WIDTH;
+      const maxX = player.side === "left" ? HALF_WIDTH : GAME_WIDTH;
 
       if (player.x < minX) player.x = minX;
-      if (player.x + player.width > maxX)
-        player.x = maxX - player.width;
+      if (player.x + player.width > maxX) player.x = maxX - player.width;
 
-      // Track max height reached (lower Y = higher up)
       if (player.y < player.maxHeightReached) {
         player.maxHeightReached = player.y;
       }
 
-      // Check collision with platforms
       platforms.forEach((platform) => {
-        if (
-          platform.side === player.side ||
-          platform.y === GAME_HEIGHT - 40
-        ) {
+        if (platform.side === player.side || platform.y === GAME_HEIGHT - 40) {
           if (checkCollision(player, platform)) {
             player.y = platform.y - player.height;
             player.velocityY = 0;
@@ -433,18 +374,13 @@ export function DualJump() {
         }
       });
 
-      // Death conditions
-      // 1. Fell off the bottom of the screen
-      const cameraY =
-        player.side === "left" ? leftCameraY.current : rightCameraY.current;
-      const screenY = player.y - cameraY; // position relative to current view
+      const cameraY = player.side === "left" ? leftCameraY.current : rightCameraY.current;
+      const screenY = player.y - cameraY;
 
       if (screenY > GAME_HEIGHT + 50) {
-        // 50px margin below frame
         player.lives = 0;
       }
 
-      // 2. Fell back to starting platform after climbing
       if (
         player.y >= STARTING_Y &&
         player.maxHeightReached < STARTING_Y - 100
@@ -453,33 +389,18 @@ export function DualJump() {
       }
     });
 
-    // Update camera positions to follow players
-    // Camera only moves up when player goes above threshold
-    const leftPlayerScreenY =
-      leftPlayer.y - leftCameraY.current;
-    if (
-      leftPlayerScreenY < CAMERA_ANCHOR &&
-      leftPlayer.velocityY < 0
-    ) {
+    // Camera follow
+    const leftPlayerScreenY = leftPlayer.y - leftCameraY.current;
+    if (leftPlayerScreenY < CAMERA_ANCHOR && leftPlayer.velocityY < 0) {
       leftCameraY.current = leftPlayer.y - CAMERA_ANCHOR;
     }
 
-    const rightPlayerScreenY =
-      rightPlayer.y - rightCameraY.current;
-    if (
-      rightPlayerScreenY < CAMERA_ANCHOR &&
-      rightPlayer.velocityY < 0
-    ) {
+    const rightPlayerScreenY = rightPlayer.y - rightCameraY.current;
+    if (rightPlayerScreenY < CAMERA_ANCHOR && rightPlayer.velocityY < 0) {
       rightCameraY.current = rightPlayer.y - CAMERA_ANCHOR;
     }
 
-    // // Keep camera from going negative
-    // if (leftCameraY.current < 0) leftCameraY.current = 0;
-    // if (rightCameraY.current < 0) rightCameraY.current = 0;
-
-    // Update moving platforms
-    // Update moving platforms AND move attached collectibles
-        // Update moving platforms and sync attached collectibles
+    // Moving platforms + attached collectibles
     const platformById: Record<number, Platform> = {};
 
     const updatedPlatforms = platforms.map((platform) => {
@@ -512,14 +433,9 @@ export function DualJump() {
 
     setPlatforms(updatedPlatforms);
 
-    // Lock collectibles to their platform x position
     setCollectibles((prev) =>
       prev.map((c) => {
-        if (
-          c.side === "right" &&
-          c.platformId != null &&
-          c.platformOffsetX != null
-        ) {
+        if (c.side === "right" && c.platformId != null && c.platformOffsetX != null) {
           const plat = platformById[c.platformId];
           if (plat) {
             return { ...c, x: plat.x + c.platformOffsetX };
@@ -529,55 +445,37 @@ export function DualJump() {
       }),
     );
 
-
-
-    // Check collectible collisions
+    // Collectible collisions
     setCollectibles((prev) =>
       prev.map((collectible) => {
-      if (collectible.collected) return collectible;
+        if (collectible.collected) return collectible;
 
-    const player =
-      collectible.side === "left" ? leftPlayer : rightPlayer;
-    const cameraY =
-      collectible.side === "left"
-        ? leftCameraY.current
-        : rightCameraY.current;
+        const player = collectible.side === "left" ? leftPlayer : rightPlayer;
+        const cameraY =
+          collectible.side === "left" ? leftCameraY.current : rightCameraY.current;
 
-    // Check if player touches collectible
-    if (
-      player.x < collectible.x + 30 &&
-      player.x + player.width > collectible.x &&
-      player.y < collectible.y + 30 &&
-      player.y + player.height > collectible.y
-    ) {
-      // Good collectibles
-      if (["book", "money", "food"].includes(collectible.type)) {
-        player.lives = Math.min(player.lives + 1, 5);
-        player.score += 10;
-        addFloatingHeart(
-          collectible.x,
-          collectible.y,
-          true,
-          cameraY,
-        );
-      } else {
-        // Bad collectibles
-        player.lives -= 1;
-        addFloatingHeart(
-          collectible.x,
-          collectible.y,
-          false,
-          cameraY,
-        );
-      }
+        if (
+          player.x < collectible.x + 30 &&
+          player.x + player.width > collectible.x &&
+          player.y < collectible.y + 30 &&
+          player.y + player.height > collectible.y
+        ) {
+          if (["book", "money", "food"].includes(collectible.type)) {
+            player.lives = Math.min(player.lives + 1, 5);
+            player.score += 10;
+            addFloatingHeart(collectible.x, collectible.y, true, cameraY);
+          } else {
+            player.lives -= 1;
+            addFloatingHeart(collectible.x, collectible.y, false, cameraY);
+          }
 
-      return { ...collectible, collected: true };
-    }
-    return collectible;
-  }),
-);
+          return { ...collectible, collected: true };
+        }
+        return collectible;
+      }),
+    );
 
-    // Update floating hearts
+    // Floating hearts animation
     setFloatingHearts((prev) =>
       prev.map((heart) => ({
         ...heart,
@@ -587,7 +485,6 @@ export function DualJump() {
       })),
     );
 
-    // Check game over
     if (leftPlayer.lives <= 0 || rightPlayer.lives <= 0) {
       setGameOver(true);
     }
@@ -597,8 +494,7 @@ export function DualJump() {
 
   useEffect(() => {
     if (gameStarted && !gameOver) {
-      animationFrameId.current =
-        requestAnimationFrame(gameLoop);
+      animationFrameId.current = requestAnimationFrame(gameLoop);
     }
 
     return () => {
@@ -608,7 +504,7 @@ export function DualJump() {
     };
   }, [gameStarted, gameOver, gameLoop]);
 
-  // Keyboard event listeners
+  // Keyboard events
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       keysPressed.current.add(e.key);
@@ -671,98 +567,75 @@ export function DualJump() {
     side: "left" | "right";
   }) => {
     const iconProps = { size: 28, strokeWidth: 1.5 };
-
-    // left side = white background → icons must be black
-    // right side = dark background → icons must be white
     const colorClass = side === "left" ? "text-black" : "text-white";
 
     switch (type) {
       case "book":
         return <BookOpen {...iconProps} className={colorClass} />;
-
       case "money":
         return <DollarSign {...iconProps} className={colorClass} />;
-
       case "food":
         return <Apple {...iconProps} className={colorClass} />;
-
-        // BAD ITEMS
       case "gun":
         return <Skull {...iconProps} className={colorClass} />;
-
       case "drug":
         return <SyringeIcon size={28} side={side} />;
-
       case "police":
         return <Car {...iconProps} className={colorClass} />;
-
       case "baby":
         return <Baby {...iconProps} className={colorClass} />;
-
       default:
         return null;
     }
   };
 
+  // 🔴 ABOUT PAGE: if true, show explanation page and nothing else
+  if (showInfo) {
+    return (
+      <StillIRiseExplanationPage onBack={() => setShowInfo(false)} />
+    );
+  }
+
+  // MAIN GAME RENDER
   return (
-    <div className="flex flex-col items-center gap-4">
+    <div className="relative flex flex-col items-center gap-4">
       {/* Title */}
-      <h1 className="tracking-widest text-gray-900">
-        STILL I RISE
-      </h1>
+      <h1 className="tracking-widest text-gray-900">STILL I RISE</h1>
 
       {/* Game Canvas */}
       <div
         className="relative border-4 border-black overflow-hidden"
         style={{ width: GAME_WIDTH, height: GAME_HEIGHT }}
       >
-        {/* Left Half - Good Path (White) */}
+        {/* Left Half */}
         <div
           className="absolute top-0 left-0 bg-white overflow-hidden"
           style={{ width: HALF_WIDTH, height: GAME_HEIGHT }}
         >
-          {/* Score and Lives - Top Left */}
+          {/* Score & Lives */}
           <div className="absolute top-4 left-4 text-black z-10">
             <div>Score: {leftPlayerRef.current.score}</div>
             <div className="flex items-center gap-1 mt-1">
               <span>Lives:</span>
-              {Array.from({
-                length: leftPlayerRef.current.lives,
-              }).map((_, i) => (
-                <Heart
-                  key={i}
-                  size={16}
-                  fill="red"
-                  className="text-red-600"
-                />
+              {Array.from({ length: leftPlayerRef.current.lives }).map((_, i) => (
+                <Heart key={i} size={16} fill="red" className="text-red-600" />
               ))}
             </div>
           </div>
 
-          {/* Upward arrow indicator */}
+          {/* Up Arrow */}
           <div className="absolute bottom-20 left-1/2 -translate-x-1/2 text-gray-400 opacity-30 z-10">
-            <div className="text-center text-[rgb(69,74,82)] text-[24px]">
-              ↑
-            </div>
-            <div className="text-xs text-[rgba(153,161,175,0)]">
-              GOOD PATH
-            </div>
+            <div className="text-center text-[rgb(69,74,82)] text-[24px]">↑</div>
+            <div className="text-xs text-[rgba(153,161,175,0)]">GOOD PATH</div>
           </div>
 
-          {/* Left side platforms and entities */}
+          {/* Platforms & Entities */}
           <div className="absolute inset-0">
             {platforms
-              .filter(
-                (p) =>
-                  p.side === "left" || p.y === GAME_HEIGHT - 40,
-              )
+              .filter((p) => p.side === "left" || p.y === GAME_HEIGHT - 40)
               .map((platform) => {
-                const screenY =
-                  platform.y - leftCameraY.current;
-                const screenX =
-                  platform.side === "left"
-                    ? platform.x
-                    : platform.x;
+                const screenY = platform.y - leftCameraY.current;
+                const screenX = platform.x;
                 return (
                   <div
                     key={platform.id}
@@ -771,8 +644,7 @@ export function DualJump() {
                       left: screenX,
                       top: screenY,
                       width:
-                        platform.side === "left" ||
-                        platform.y === GAME_HEIGHT - 40
+                        platform.side === "left" || platform.y === GAME_HEIGHT - 40
                           ? platform.width
                           : HALF_WIDTH,
                       height: platform.height,
@@ -781,27 +653,23 @@ export function DualJump() {
                 );
               })}
 
-            {/* Left side collectibles */}
+            {/* Collectibles */}
             {collectibles
               .filter((c) => c.side === "left" && !c.collected)
               .map((collectible) => {
-                const screenY =
-                  collectible.y - leftCameraY.current;
+                const screenY = collectible.y - leftCameraY.current;
                 return (
                   <div
                     key={collectible.id}
                     className="absolute"
-                    style={{
-                      left: collectible.x,
-                      top: screenY,
-                    }}
+                    style={{ left: collectible.x, top: screenY }}
                   >
                     <CollectibleIcon type={collectible.type} side="left" />
                   </div>
                 );
               })}
 
-            {/* Left Player */}
+            {/* Player */}
             {gameStarted && (
               <div
                 className="absolute"
@@ -824,91 +692,65 @@ export function DualJump() {
           </div>
         </div>
 
-        {/* Right Half - Hard Path (Black) */}
+        {/* Right Half */}
         <div
           className="absolute top-0 bg-black overflow-hidden"
-          style={{
-            left: HALF_WIDTH,
-            width: HALF_WIDTH,
-            height: GAME_HEIGHT,
-          }}
+          style={{ left: HALF_WIDTH, width: HALF_WIDTH, height: GAME_HEIGHT }}
         >
-          {/* Score, Lives, and TUPIT logo - Top Right */}
-        <div className="absolute top-4 right-4 text-white text-right z-10">
-          <div>Score: {rightPlayerRef.current.score}</div>
+          {/* Score, Lives & TUPIT */}
+          <div className="absolute top-4 right-4 text-white text-right z-10">
+            <div>Score: {rightPlayerRef.current.score}</div>
 
-          <div className="flex items-center justify-end gap-1 mt-1">
-            <span>Lives:</span>
-            {Array.from({
-              length: rightPlayerRef.current.lives,
-            }).map((_, i) => (
-              <Heart
-                key={i}
-                size={16}
-                fill="red"
-                className="text-red-600"
-              />
-            ))}
-          </div>
+            <div className="flex items-center justify-end gap-1 mt-1">
+              <span>Lives:</span>
+              {Array.from({ length: rightPlayerRef.current.lives }).map((_, i) => (
+                <Heart key={i} size={16} fill="red" className="text-red-600" />
+              ))}
+            </div>
 
-          {/* Clickable TUPIT logo */}
-          <button
-            type="button"
-            onClick={activateTupit}
-            className="mt-2 flex justify-end w-full"
-            style={{
-              background: "none",
-              border: "none",
-              padding: 0,
-              outline: "none",
-              boxShadow: "none",
-              cursor: "pointer",
-            }}
-          >
-            <img
-              src={tupitLogo}
-              alt="TUPIT logo"
-              className="object-contain transition-all duration-300"
+            <button
+              type="button"
+              onClick={activateTupit}
+              className="mt-2 flex justify-end w-full"
               style={{
-                height: "34px",
-                width: "auto",
-                opacity: tupitActivated ? 1 : 0.35,
-                filter: tupitActivated
-                  ? "none"
-                  : "grayscale(100%) brightness(60%)",
-                display: "block", // removes inline spacing
+                background: "none",
+                border: "none",
+                padding: 0,
+                outline: "none",
+                boxShadow: "none",
+                cursor: "pointer",
               }}
-            />
-          </button>
-
-
-        </div>
-
-          {/* Upward arrow indicator */}
-          <div className="absolute bottom-20 left-1/2 -translate-x-1/2 text-gray-600 opacity-30 z-10">
-            <div className="text-center text-[rgb(255,255,255)] text-[24px]">
-              ↑
-            </div>
-            <div className="text-xs text-[rgba(74,85,101,0)]">
-              HARD PATH
-            </div>
+            >
+              <img
+                src={tupitLogo}
+                alt="TUPIT logo"
+                className="object-contain transition-all duration-300"
+                style={{
+                  height: "34px",
+                  width: "auto",
+                  opacity: tupitActivated ? 1 : 0.35,
+                  filter: tupitActivated
+                    ? "none"
+                    : "grayscale(100%) brightness(60%)",
+                  display: "block",
+                }}
+              />
+            </button>
           </div>
 
-          {/* Right side platforms and entities */}
+          {/* Up Arrow */}
+          <div className="absolute bottom-20 left-1/2 -translate-x-1/2 text-gray-600 opacity-30 z-10">
+            <div className="text-center text-[rgb(255,255,255)] text-[24px]">↑</div>
+            <div className="text-xs text-[rgba(74,85,101,0)]">HARD PATH</div>
+          </div>
+
+          {/* Platforms & Entities */}
           <div className="absolute inset-0">
             {platforms
-              .filter(
-                (p) =>
-                  p.side === "right" ||
-                  p.y === GAME_HEIGHT - 40,
-              )
+              .filter((p) => p.side === "right" || p.y === GAME_HEIGHT - 40)
               .map((platform) => {
-                const screenY =
-                  platform.y - rightCameraY.current;
-                const screenX =
-                  platform.side === "right"
-                    ? platform.x - HALF_WIDTH
-                    : 0;
+                const screenY = platform.y - rightCameraY.current;
+                const screenX = platform.side === "right" ? platform.x - HALF_WIDTH : 0;
                 return (
                   <div
                     key={platform.id}
@@ -917,30 +759,24 @@ export function DualJump() {
                       left: screenX,
                       top: screenY,
                       width:
-                        platform.side === "right"
-                          ? platform.width
-                          : HALF_WIDTH,
+                        platform.side === "right" ? platform.width : HALF_WIDTH,
                       height: platform.height,
                     }}
                   >
-                    {/* Motion arrows for moving platforms */}
                     {platform.movingDirection && (
                       <div className="absolute -top-3 left-1/2 -translate-x-1/2 text-gray-500 text-xs">
-                        {platform.movingDirection > 0
-                          ? "→"
-                          : "←"}
+                        {platform.movingDirection > 0 ? "→" : "←"}
                       </div>
                     )}
                   </div>
                 );
               })}
 
-            {/* Right side collectibles */}
+            {/* Collectibles */}
             {collectibles
               .filter((c) => c.side === "right" && !c.collected)
               .map((collectible) => {
-                const screenY =
-                  collectible.y - rightCameraY.current;
+                const screenY = collectible.y - rightCameraY.current;
                 return (
                   <div
                     key={collectible.id}
@@ -950,12 +786,12 @@ export function DualJump() {
                       top: screenY,
                     }}
                   >
-                <CollectibleIcon type={collectible.type} side="right" />
+                    <CollectibleIcon type={collectible.type} side="right" />
                   </div>
                 );
               })}
 
-            {/* Right Player */}
+            {/* Player */}
             {gameStarted && (
               <div
                 className="absolute"
@@ -978,28 +814,21 @@ export function DualJump() {
           </div>
         </div>
 
-        {/* Center dividing line */}
+        {/* Center Divider */}
         <div
           className="absolute top-0 w-1 bg-gray-500 z-20"
-          style={{
-            left: HALF_WIDTH - 0.5,
-            height: GAME_HEIGHT,
-          }}
+          style={{ left: HALF_WIDTH - 0.5, height: GAME_HEIGHT }}
         />
 
         {/* Floating Hearts */}
         {floatingHearts.map((heart) => {
-          // Calculate animation effects based on time
-          const progress = heart.time / 50; // 50 frames for full animation
-          
-          // Good heart: floats up smoothly with soft glow
+          const progress = heart.time / 50;
           const goodHeartY = heart.y;
-          
-          // Bad heart: drops slightly then shakes
           const shakeX = heart.isGood ? 0 : Math.sin(heart.time * 0.5) * 3;
-          const badHeartY = heart.y + (heart.isGood ? 0 : Math.sin(progress * Math.PI) * 8);
+          const badHeartY =
+            heart.y + (heart.isGood ? 0 : Math.sin(progress * Math.PI) * 8);
           const rotation = heart.isGood ? 0 : Math.sin(heart.time * 0.4) * 5;
-          
+
           return (
             <div
               key={heart.id}
@@ -1009,23 +838,20 @@ export function DualJump() {
                 top: heart.isGood ? goodHeartY : badHeartY,
                 opacity: heart.opacity,
                 transform: `rotate(${rotation}deg)`,
-                transition: 'transform 0.1s ease-out',
+                transition: "transform 0.1s ease-out",
               }}
             >
               {heart.isGood ? (
-                <div style={{
-                  filter: 'drop-shadow(0 0 8px rgba(255, 255, 255, 0.8)) drop-shadow(0 0 4px rgba(255, 100, 100, 0.6))',
-                }}>
-                  <Heart
-                    size={32}
-                    fill="#EF4444"
-                    className="text-red-500"
-                  />
+                <div
+                  style={{
+                    filter:
+                      "drop-shadow(0 0 8px rgba(255, 255, 255, 0.8)) drop-shadow(0 0 4px rgba(255, 100, 100, 0.6))",
+                  }}
+                >
+                  <Heart size={32} fill="#EF4444" className="text-red-500" />
                 </div>
               ) : (
-                <BrokenHeart
-                  size={32}
-                />
+                <BrokenHeart size={32} />
               )}
             </div>
           );
@@ -1038,97 +864,72 @@ export function DualJump() {
               <h2 className="mb-6">Choose Your Path</h2>
               <div className="grid grid-cols-2 gap-8 mb-8">
                 <div className="text-left">
-                  <h3 className="mb-3 text-gray-300">
-                    Good Path (Left)
-                  </h3>
+                  <h3 className="mb-3 text-gray-300">Good Path (Left)</h3>
                   <p className="text-sm mb-3 text-gray-400">
-                    Collect knowledge, opportunity, and
-                    sustenance to gain lives.
+                    Collect knowledge, opportunity, and sustenance to gain lives.
                   </p>
                   <div className="space-y-2 text-sm">
                     <div className="flex items-center gap-2">
-                      <kbd className="px-2 py-1 bg-gray-700 rounded">
-                        A
-                      </kbd>
-                      <span className="text-gray-400">
-                        Move Left
-                      </span>
+                      <kbd className="px-2 py-1 bg-gray-700 rounded">A</kbd>
+                      <span className="text-gray-400">Move Left</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <kbd className="px-2 py-1 bg-gray-700 rounded">
-                        W
-                      </kbd>
-                      <span className="text-gray-400">
-                        Jump
-                      </span>
+                      <kbd className="px-2 py-1 bg-gray-700 rounded">W</kbd>
+                      <span className="text-gray-400">Jump</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <kbd className="px-2 py-1 bg-gray-700 rounded">
-                        D
-                      </kbd>
-                      <span className="text-gray-400">
-                        Move Right
-                      </span>
+                      <kbd className="px-2 py-1 bg-gray-700 rounded">D</kbd>
+                      <span className="text-gray-400">Move Right</span>
                     </div>
                   </div>
                 </div>
                 <div className="text-left">
-                  <h3 className="mb-3 text-gray-300">
-                    Hard Path (Right)
-                  </h3>
+                  <h3 className="mb-3 text-gray-300">Hard Path (Right)</h3>
                   <p className="text-sm mb-3 text-gray-400">
-                    Avoid temptations and dangers. Moving
-                    platforms, lose lives on contact.
+                    Avoid temptations and dangers. Moving platforms, lose lives on
+                    contact.
                   </p>
                   <div className="space-y-2 text-sm">
                     <div className="flex items-center gap-2">
-                      <kbd className="px-2 py-1 bg-gray-700 rounded">
-                        J
-                      </kbd>
-                      <span className="text-gray-400">
-                        Move Left
-                      </span>
+                      <kbd className="px-2 py-1 bg-gray-700 rounded">J</kbd>
+                      <span className="text-gray-400">Move Left</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <kbd className="px-2 py-1 bg-gray-700 rounded">
-                        I
-                      </kbd>
-                      <span className="text-gray-400">
-                        Jump
-                      </span>
+                      <kbd className="px-2 py-1 bg-gray-700 rounded">I</kbd>
+                      <span className="text-gray-400">Jump</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <kbd className="px-2 py-1 bg-gray-700 rounded">
-                        L
-                      </kbd>
-                      <span className="text-gray-400">
-                        Move Right
-                      </span>
+                      <kbd className="px-2 py-1 bg-gray-700 rounded">L</kbd>
+                      <span className="text-gray-400">Move Right</span>
                     </div>
                   </div>
                 </div>
               </div>
-              <button
-                onClick={startGame}
-                className="px-8 py-3 bg-white text-black hover:bg-gray-200 transition-colors"
-              >
-                START GAME
-              </button>
+              <div className="mt-4 flex justify-center gap-4">
+                <button
+                  onClick={startGame}
+                  className="px-8 py-3 bg-white text-black hover:bg-gray-200 transition-colors"
+                >
+                  START GAME
+                </button>
+                <button
+                  onClick={() => setShowInfo(true)}
+                  className="px-8 py-3 bg-white text-black hover:bg-gray-200 transition-colors"
+                >
+                  ABOUT THIS GAME
+                </button>
+              </div>
             </div>
           </div>
         )}
 
-        {/* Game Over Screen */}
+        {/* Game Over */}
         {gameOver && (
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-90 text-white z-40">
             <h2 className="mb-4">GAME OVER</h2>
             <div className="mb-6 text-center space-y-2">
-              <p>
-                Good Path Score: {leftPlayerRef.current.score}
-              </p>
-              <p>
-                Hard Path Score: {rightPlayerRef.current.score}
-              </p>
+              <p>Good Path Score: {leftPlayerRef.current.score}</p>
+              <p>Hard Path Score: {rightPlayerRef.current.score}</p>
             </div>
             <div className="flex gap-4">
               <button

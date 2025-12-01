@@ -46,7 +46,7 @@ export function StillIRiseExplanationPage({ onBack }: Props) {
               className="inline-flex items-center gap-1 rounded-full border border-slate-300 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 shadow hover:bg-slate-100 transition"
             >
               <ArrowLeft className="h-3 w-3" />
-              Back to Game
+              Back to Home
             </button>
           </header>
 

@@ -13,6 +13,7 @@ import {
   Car,
   Baby,
   Heart,
+  Syringe,
 } from "lucide-react";
 import { BrokenHeart } from "./BrokenHeart";
 import { PlayerStickFigure } from "./PlayerStickFigure";
@@ -599,9 +600,6 @@ export function DualJump() {
   // MAIN GAME RENDER
   return (
     <div className="relative flex flex-col items-center gap-4">
-      {/* Title */}
-      <h1 className="tracking-widest text-gray-900">STILL I RISE</h1>
-
       {/* Game Canvas */}
       <div
         className="relative border-4 border-black overflow-hidden"
@@ -860,13 +858,26 @@ export function DualJump() {
         {/* Start Screen */}
         {!gameStarted && (
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-900 bg-opacity-90 z-40">
-            <div className="text-white text-center max-w-xl p-8">
-              <h2 className="mb-6">Choose Your Path</h2>
-              <div className="grid grid-cols-2 gap-8 mb-8">
-                <div className="text-left">
-                  <h3 className="mb-3 text-gray-300">Good Path (Left)</h3>
+            <div className="text-white text-center max-w-3xl p-8">
+              <h2 className="text-sm tracking-[0.35em] uppercase text-gray-400 mb-2">
+                Still I Rise
+              </h2>
+              <p className="text-lg font-semibold mb-4">
+                Two players, two paths, one climb.
+              </p>
+              <p className="text-sm text-gray-300 mb-8">
+                Climb as high as you can. Collect good items and glowing hearts to stay alive, 
+                avoid bad items and falling off the screen. The left side is more stable; the 
+                right side is harder and more unstable.
+              </p>
+
+              {/* Controls */}
+              <div className="grid grid-cols-2 gap-8 mb-8 text-left">
+                <div>
+                  <h3 className="mb-2 text-gray-200 font-semibold">Good Path (Left)</h3>
                   <p className="text-sm mb-3 text-gray-400">
-                    Collect knowledge, opportunity, and sustenance to gain lives.
+                    Collect books, apples, and dollar signs to gain hearts and climb higher.
+                    Platforms are mostly stable.
                   </p>
                   <div className="space-y-2 text-sm">
                     <div className="flex items-center gap-2">
@@ -883,11 +894,12 @@ export function DualJump() {
                     </div>
                   </div>
                 </div>
-                <div className="text-left">
-                  <h3 className="mb-3 text-gray-300">Hard Path (Right)</h3>
+
+                <div>
+                  <h3 className="mb-2 text-gray-200 font-semibold">Hard Path (Right)</h3>
                   <p className="text-sm mb-3 text-gray-400">
-                    Avoid temptations and dangers. Moving platforms, lose lives on
-                    contact.
+                    Platforms move and shift. Avoid red icons and cracked hearts. 
+                    Click the TUPIT logo during the climb to trigger extra book drops.
                   </p>
                   <div className="space-y-2 text-sm">
                     <div className="flex items-center gap-2">
@@ -905,16 +917,42 @@ export function DualJump() {
                   </div>
                 </div>
               </div>
-              <div className="mt-4 flex justify-center gap-4">
+
+              {/* Visual legend */}
+              <div className="mb-8 text-sm text-gray-300">
+                <div className="flex flex-wrap justify-center gap-6">
+                  <div className="flex items-center gap-2">
+                    <Heart size={16} fill="red" className="text-red-500" />
+                    <span>Glowing Heart = extra life</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <BookOpen size={16} className="text-white" />
+                    <Apple size={16} className="text-white" />
+                    <DollarSign size={16} className="text-white" />
+                    <span>Good collectibles = help you rise</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <BrokenHeart size={16} />
+                    <Skull size={16} className="text-white" />
+                    <Car size={16} className="text-white" />
+                    <Baby size={16} className="text-white" />
+                    <Syringe size={16} className="text-white" />
+                    <span>Bad collectibles = take hearts / knock you down</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Buttons */}
+              <div className="mt-2 flex justify-center gap-4">
                 <button
                   onClick={startGame}
-                  className="px-8 py-3 bg-white text-black hover:bg-gray-200 transition-colors"
+                  className="px-8 py-3 bg-white text-black hover:bg-gray-200 transition-colors rounded-lg"
                 >
                   START GAME
                 </button>
                 <button
                   onClick={() => setShowInfo(true)}
-                  className="px-8 py-3 bg-white text-black hover:bg-gray-200 transition-colors"
+                  className="px-8 py-3 bg-blue-900 text-white hover:bg-blue-700 transition-colors rounded-lg"
                 >
                   ABOUT THIS GAME
                 </button>
@@ -923,33 +961,51 @@ export function DualJump() {
           </div>
         )}
 
+
         {/* Game Over */}
-        {gameOver && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-90 text-white z-40">
-            <h2 className="mb-4">GAME OVER</h2>
-            <div className="mb-6 text-center space-y-2">
-              <p>Good Path Score: {leftPlayerRef.current.score}</p>
-              <p>Hard Path Score: {rightPlayerRef.current.score}</p>
-            </div>
-            <div className="flex gap-4">
-              <button
-                onClick={startGame}
-                className="px-8 py-3 bg-white text-black hover:bg-gray-200 transition-colors"
-              >
-                RESTART
-              </button>
-              <button
-                onClick={() => {
-                  setGameStarted(false);
-                  setGameOver(false);
-                }}
-                className="px-8 py-3 bg-gray-700 text-white hover:bg-gray-600 transition-colors"
-              >
-                EXIT
-              </button>
-            </div>
+       {gameOver && (
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-90 text-white z-40">
+          <h2 className="mb-4 text-2xl font-bold tracking-wide">GAME OVER</h2>
+
+          <div className="mb-6 text-center space-y-2 text-gray-300">
+            <p>Good Path Score: {leftPlayerRef.current.score}</p>
+            <p>Hard Path Score: {rightPlayerRef.current.score}</p>
           </div>
-        )}
+
+          <div className="flex gap-4">
+            {/* Restart */}
+            <button
+              onClick={startGame}
+              className="px-8 py-3 bg-white text-black hover:bg-gray-200 transition-colors rounded-lg"
+            >
+              RESTART
+            </button>
+
+            {/* Exit to Start */}
+            <button
+              onClick={() => {
+                setGameStarted(false);
+                setGameOver(false);
+              }}
+              className="px-8 py-3 bg-gray-700 text-white hover:bg-gray-600 transition-colors rounded-lg"
+            >
+              EXIT
+            </button>
+
+            {/* About This Game */}
+            <button
+              onClick={() => {
+                setGameStarted(false);
+                setGameOver(false);
+                setShowInfo(true); // <-- opens About section
+              }}
+              className="px-8 py-3 bg-blue-900 text-white hover:bg-blue-700 transition-colors rounded-lg"
+            >
+              ABOUT THIS GAME
+            </button>
+          </div>
+        </div>
+      )}
       </div>
 
       {/* Control Legend */}

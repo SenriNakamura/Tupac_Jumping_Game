@@ -12,6 +12,10 @@ import {
 } from "lucide-react";
 
 import React from "react";
+import { BrokenHeart } from "./BrokenHeart";
+import hilaryPic from "../assets/hbinda_headshot.jpeg";
+import davidPic from "../assets/David-Delvalle-Headshot.png";
+
 
 interface Props {
   onBack: () => void;
@@ -51,18 +55,18 @@ export function StillIRiseExplanationPage({ onBack }: Props) {
 
             {/* LEFT SIDE — PLAIN WHITE */}
             <section className="p-8 md:p-10 bg-white text-slate-800 space-y-10 leading-relaxed text-sm">
-
+              <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
               {/* --- 01 INTRO --- */}
               <div>
                 <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-slate-400">
                   01 · Introduction
                 </p>
-                <h2 className="mt-2 text-base font-semibold text-slate-900">Why This Game Exists</h2>
+                <h2 className="mt-2 text-base font-semibold text-slate-900">Why I Made This Game</h2>
 
                 <p className="mt-3">
                   I created this interactive game as my final project for{" "}
                   <span className="italic">Revolutionary Rhymes: Tupac Shakur and the Study of Society</span>{" "}
-                  instructed by Professor Deion M. Owens, AM. Instead of using lecture slides to discuss
+                  instructed by Professor Deion M. Owens, AM. Instead of using slides to discuss
                   intergenerational trauma, mass incarceration, schooling, and inequality, this game asks players to
                   climb through those themes with their hands, not only their heads.
                 </p>
@@ -83,7 +87,8 @@ export function StillIRiseExplanationPage({ onBack }: Props) {
                   back down.
                 </p>
               </div>
-
+              </div>
+              <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
               {/* --- 02 TUPIT --- */}
               <div>
                 <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-slate-400">
@@ -98,29 +103,47 @@ export function StillIRiseExplanationPage({ onBack }: Props) {
                   This project draws heavily on insights shared by Professor Hilary Binda and Mr. David Delvalle
                   during my ethnographic interviews.
                 </p>
-
-                <div className="mt-3 rounded-xl border border-slate-200 bg-slate-50 p-3 shadow-sm">
-                  <p className="font-semibold text-xs">Professor Hilary Binda</p>
-                  <p className="text-xs mt-1 text-slate-600 leading-relaxed">
-                    Founder & Executive Director of the Tufts University Prison Initiative of Tisch College (TUPIT)
-                    and the MyTERN reentry program. She teaches literature, carceral studies, and gender studies.
-                  </p>
+                {/* Hilary Binda */}
+                <div className="mt-4 flex items-center gap-4">
+                  <img
+                    src={hilaryPic}
+                    alt="Professor Hilary Binda"
+                    className="w-20 h-20 object-cover rounded-xl border border-slate-300 shadow"
+                  />
+                  <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 shadow-sm">
+                    <p className="font-semibold text-xs">Professor Hilary Binda</p>
+                    <p className="text-xs mt-1 text-slate-600 leading-relaxed">
+                      Founder & Executive Director of the Tufts University Prison Initiative of
+                      Tisch College (TUPIT) and the MyTERN reentry program. She teaches
+                      literature, carceral studies, and gender studies.
+                    </p>
+                  </div>
                 </div>
 
-                <div className="mt-3 rounded-xl border border-slate-200 bg-slate-50 p-3 shadow-sm">
+                {/* David Delvalle */}
+              <div className="mt-4 flex items-center gap-4">
+                <img
+                  src={davidPic}
+                  alt="Mr. David Delvalle"
+                  className="w-20 h-20 object-cover rounded-xl border border-slate-300 shadow"
+                />
+                <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 shadow-sm">
                   <p className="font-semibold text-xs">Mr. David Delvalle</p>
                   <p className="text-xs mt-1 text-slate-600 leading-relaxed">
-                    Education & Reentry Director of TUPIT and MyTERN. He began his Tufts degree while incarcerated
-                    and now works as an educator and advocate for justice reform.
+                    Education & Reentry Director of TUPIT and MyTERN. He began his Tufts
+                    degree while incarcerated and now works as an educator and advocate for
+                    justice reform.
                   </p>
                 </div>
+              </div>
 
                 <p className="mt-3">
                   Their insights shaped the “hard path” design and the TUPIT power-up, showing how education
                   transforms possible futures even inside carceral systems.
                 </p>
               </div>
-
+              </div>
+              <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
               {/* --- 03 Split Screen --- */}
               <div>
                 <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-slate-400">
@@ -140,7 +163,8 @@ export function StillIRiseExplanationPage({ onBack }: Props) {
                   <span className="italic">“I’m tired of bein’ poor and even worse I’m Black.”</span>
                 </p>
               </div>
-
+              </div>
+              <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
               {/* --- 04 Upward Mobility --- */}
               <div>
                 <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-slate-400">
@@ -154,91 +178,110 @@ export function StillIRiseExplanationPage({ onBack }: Props) {
                   conditions; shifting platforms on the right reflect structural instability.
                 </p>
               </div>
+              </div>
             </section>
 
             {/* RIGHT SIDE — DARK PANEL, NO GRADIENT */}
             <section className="p-8 md:p-10 bg-slate-900 text-slate-100 space-y-8">
 
-              {/* Collectible List */}
-              <div>
+              {/* COLLECTIBLES CARD */}
+              <div className="rounded-xl border border-slate-700 bg-slate-900/60 p-4">
                 <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-slate-400">
-                  Collectible Palette
-                </p>
-                <h2 className="mt-2 text-base font-semibold">What Each Icon Means</h2>
-                <p className="mt-2 text-xs text-slate-400">
-                  Each collectible embodies course theory, lyrics, and themes.
+                  Collectibles
                 </p>
 
-                <div className="mt-4 space-y-5">
-
+                {/* GOOD COLLECTIBLES */}
+                <p className="mt-3 text-[10px] font-semibold uppercase tracking-[0.22em] text-white">
+                  Good Collectibles (Help You Rise)
+                </p>
+                <div className="mt-2 space-y-3">
                   <CollectibleRow
-                    icon={<BookOpen className="h-5 w-5 text-emerald-300" />}
-                    title="Book – Education and political literacy"
-                    body="Books represent political education and critical awareness, echoing Afeni Shakur’s teachings and TUPIT’s mission."
+                    icon={<BookOpen className="h-4 w-4 text-white" />}
+                    title="Book – Education Access"
+                    body="Boosts your chances: schooling, degrees, and programs like TUPIT that open doors instead of closing them."
                   />
-
                   <CollectibleRow
-                    icon={<DollarSign className="h-5 w-5 text-amber-300" />}
-                    title="Money – Economic survival"
-                    body="Represents rent, food, stability, and the ability to avoid risky decisions under economic pressure."
+                    icon={<Apple className="h-4 w-4 text-white" />}
+                    title="Apple – Basic Needs Met"
+                    body="Food, health, and stability. When these are present, it’s easier to focus on learning and growth."
                   />
-
                   <CollectibleRow
-                    icon={<Apple className="h-5 w-5 text-rose-300" />}
-                    title="Food – Basic needs and survival"
-                    body="Shows how hunger and housing insecurity shape decision-making and opportunity."
+                    icon={<DollarSign className="h-4 w-4 text-white" />}
+                    title="Dollar Sign – Predatory Costs"
+                    body="Debt, fines, and fees that drain resources instead of investing in you."
                   />
+                </div>
 
+                {/* BAD COLLECTIBLES */}
+                <p className="mt-4 text-[10px] font-semibold uppercase tracking-[0.22em] text-white">
+                  Bad Collectibles (Pull You Down)
+                </p>
+                <div className="mt-2 space-y-3">
+                  
                   <CollectibleRow
-                    icon={<Skull className="h-5 w-5 text-red-400" />}
-                    title="Skull / Gun – Violence and hypermasculinity"
-                    body="Reflects danger and the silence–violence loop discussed in class."
+                    icon={<Syringe className="h-4 w-4 text-white" />}
+                    title="Syringe – Criminalized Drug Use"
+                    body="Echoes how addiction is punished instead of treated as a health issue, repeating Afeni and Tupac’s story."
                   />
-
                   <CollectibleRow
-                    icon={<Syringe className="h-5 w-5 text-cyan-300" />}
-                    title="Syringe – Addiction and coping"
-                    body="Connects to Afeni Shakur’s struggle with addiction and harmful coping systems."
+                    icon={<Skull className="h-4 w-4 text-white" />}
+                    title="Skull – Carceral & Deadly Outcomes"
+                    body="Represents jail, violence, and early death baked into unequal systems."
                   />
-
                   <CollectibleRow
-                    icon={<Car className="h-5 w-5 text-blue-300" />}
-                    title="Police – Surveillance and criminalization"
-                    body="Represents carceral power and systemic surveillance, major themes in the course."
+                    icon={<Car className="h-4 w-4 text-white" />}
+                    title="Car – Systemic Obstacles"
+                    body="Police stops, surveillance, and over-policing that can derail the climb at any moment."
                   />
-
                   <CollectibleRow
-                    icon={<Baby className="h-5 w-5 text-teal-300" />}
-                    title="Baby – Brenda’s Got a Baby"
-                    body="Echoes Tupac’s story of a girl forced into adulthood without support."
+                    icon={<Baby className="h-4 w-4 text-white" />}
+                    title="Car – Systemic Obstacles"
+                    body="Police stops, surveillance, and over-policing that can derail the climb at any moment."
                   />
                 </div>
               </div>
 
-              {/* Hearts section */}
+              {/* Hearts section – matched to in-game visuals */}
               <div className="rounded-xl border border-slate-700 bg-slate-800 p-4 text-xs">
                 <p className="font-semibold uppercase text-slate-400 tracking-widest text-[10px]">
                   Emotional Feedback
                 </p>
 
+                {/* GOOD HEART: bright red, glowing, floating up */}
                 <div className="mt-2 flex items-center gap-2">
-                  <Heart className="h-4 w-4 text-emerald-300" />
-                  <p className="font-semibold">Floating Hearts</p>
+                  <div
+                    className="flex h-6 w-6 items-center justify-center rounded-full bg-slate-900"
+                    style={{
+                      filter:
+                        "drop-shadow(0 0 8px rgba(255,255,255,0.8)) drop-shadow(0 0 4px rgba(255,100,100,0.6))",
+                    }}
+                  >
+                    <Heart className="h-4 w-4 text-red-500" fill="#EF4444" />
+                  </div>
+                  <p className="font-semibold">Glowing Hearts (Good Collectibles)</p>
                 </div>
 
                 <p className="mt-2 text-slate-300">
-                  Represents emotional repair and support—moments when players “feel seen.”
+                  The full bright-red heart with a soft white glow matches the in-game animation:
+                  it floats upward and slowly fades out when you gain a life or positive resource.
+                  It marks moments of care, repair, and being “lifted up.”
                 </p>
 
+                {/* BAD HEART: dark red, cracked, jittery/falling */}
                 <div className="mt-4 flex items-center gap-2">
-                  <Heart className="h-4 w-4 text-rose-300 rotate-12" />
-                  <p className="font-semibold">Cracked Hearts & Falling</p>
+                  <div className="flex h-6 w-6 items-center justify-center rounded-full bg-slate-900">
+                    <BrokenHeart size={18} />
+                  </div>
+                  <p className="font-semibold">Broken Hearts (Bad Collectibles)</p>
                 </div>
 
                 <p className="mt-2 text-slate-300">
-                  Reflects trauma, setbacks, and cycles of punishment within unequal systems.
+                  The deep red cracked heart matches the bad collectible animation: it drops,
+                  jitters side-to-side, and rotates as your life is taken away. It visualizes
+                  trauma, punishment, and how one mistake can echo through the rest of the climb.
                 </p>
               </div>
+
 
               {/* Why a Game */}
               <div className="rounded-xl border border-slate-700 bg-slate-800 p-4 text-xs text-slate-300 leading-relaxed">
@@ -255,6 +298,16 @@ export function StillIRiseExplanationPage({ onBack }: Props) {
                   “Keep Ya Head Up” becomes the game’s core mechanic—keep rising even when the world pushes down.
                 </p>
               </div>
+              {/* FOOTER DISCLAIMER */}
+              <div className="mt-12 border-t border-slate-300 pt-3">
+                <p className="text-[10px] text-slate-500 tracking-wide text-center leading-relaxed">
+                  This game is a conceptual educational project designed to visualize themes of structural inequality,
+                  mobility, and carceral systems for academic study. All visual elements are metaphorical and do not
+                  depict or imply characteristics of any specific group or individual. The design is intended solely to
+                  support critical reflection within the course context.
+                </p>
+              </div>
+
             </section>
           </div>
         </div>

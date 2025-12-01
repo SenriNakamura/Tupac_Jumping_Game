@@ -870,6 +870,9 @@ export function DualJump() {
                 avoid bad items and falling off the screen. The left side is more stable; the 
                 right side is harder and more unstable.
               </p>
+              <p className="text-xs text-red-300 italic mb-6">
+                Note: This game is optimized for laptops and desktop browsers. Mobile play is not supported.
+              </p>
 
               {/* Controls */}
               <div className="grid grid-cols-2 gap-8 mb-8 text-left">

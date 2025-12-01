@@ -46,3 +46,5 @@ git clone https://github.com/SenriNakamura/Tupac_Jumping_Game.git
 cd Tupac_Jumping_Game
 npm install
 npm start
+
+

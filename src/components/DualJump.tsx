@@ -901,7 +901,7 @@ export function DualJump() {
                 <div>
                   <h3 className="mb-2 text-gray-200 font-semibold">Hard Path (Right)</h3>
                   <p className="text-sm mb-3 text-gray-400">
-                    Platforms move and shift. Avoid red icons and cracked hearts. 
+                    Platforms move and shift. Avoid bad items or you lose hearts. 
                     Click the TUPIT logo during the climb to trigger extra book drops.
                   </p>
                   <div className="space-y-2 text-sm">

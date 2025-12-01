@@ -298,6 +298,90 @@ export function StillIRiseExplanationPage({ onBack }: Props) {
                   “Keep Ya Head Up” becomes the game’s core mechanic—keep rising even when the world pushes down.
                 </p>
               </div>
+
+              {/* REFERENCES */}
+              <div className="mt-8 rounded-xl border border-slate-700 bg-slate-800 p-4 text-xs text-slate-300 leading-relaxed">
+                <p className="uppercase tracking-widest text-slate-400 text-[10px] font-semibold mb-2">
+                  References
+                </p>
+
+                <ul className="space-y-1">
+                  <li>
+                    • Shakur, Tupac. <span className="italic">Still I Rise</span>.  
+                    <a
+                      href="https://youtu.be/931I2WbJHXE?si=ufSJ4Mhcu2n77f-W"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-slate-400 underline hover:text-slate-300"
+                    >
+                      Listen here
+                    </a>
+                  </li>
+
+                  <li>
+                    • Shakur, Tupac. <span className="italic">Changes</span>.  
+                    <a
+                      href="https://www.youtube.com/watch?v=eXvBjCO19QY"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-slate-400 underline hover:text-slate-300"
+                    >
+                      Listen here
+                    </a>
+                  </li>
+
+                  <li>
+                    • Tufts University Prison Initiative of Tisch College (TUPIT).  
+                    <a
+                      href="https://sites.tufts.edu/tupit/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-slate-400 underline hover:text-slate-300"
+                    >
+                      Official Site
+                    </a>
+                  </li>
+
+                  <li>
+                    • MyTERN Reentry Program.  
+                    <a
+                      href="https://sites.tufts.edu/tupit/mytern-2/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-slate-400 underline hover:text-slate-300"
+                    >
+                      Learn More
+                    </a>
+                  </li>
+
+                  <li>
+                    • Owens, Deion M. — Course:  
+                    <span className="italic">
+                      Revolutionary Rhymes: Tupac Shakur and the Study of Society
+                    </span>.
+                    <a
+                      href="https://www.linkedin.com/in/deion-m-owens/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="ml-1 text-slate-400 underline hover:text-slate-300"
+                    >
+                      Faculty Page
+                    </a>
+                  </li>
+
+                  <li>
+                    • Interviews with Hilary Binda & David Delvalle (2025).  
+                    <a
+                      href="#"
+                      onClick={(e) => e.preventDefault()}
+                      className="text-slate-500 cursor-default"
+                    >
+                      (private interview data)
+                    </a>
+                  </li>
+                </ul>
+              </div>
+
               {/* FOOTER DISCLAIMER */}
               <div className="mt-12 border-t border-slate-300 pt-3">
                 <p className="text-[10px] text-slate-500 tracking-wide text-center leading-relaxed">

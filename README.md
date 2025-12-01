@@ -46,3 +46,7 @@ git clone https://github.com/SenriNakamura/Tupac_Jumping_Game.git
 cd Tupac_Jumping_Game
 npm install
 npm start
+
+---
+## Disclaimer
+This game is a conceptual educational project designed to visualize themes of structural inequality, mobility, and carceral systems for academic study. All visual elements and characters are metaphorical and do not depict or imply traits, behaviors, or identities of any specific racial, ethnic, or social group. The design is intended solely to support critical reflection within the context of the course.

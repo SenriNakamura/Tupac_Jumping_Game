@@ -1,9 +1,48 @@
-# Tupac_Jumping_Game
-TODO:
-add links
-elaborate each
-add footer of disclaimer 
-add logic of goal finished
-edit intro that this is for PC keyboard, not mobile
-adjust the number of platforms to the life expectancy in lowell, ma for right side
-edit platform into cooler versions that i had in figma previously
+# Still I Rise – Tupac Jumping Game  
+Play it here → **https://tupac-jumping-game.vercel.app**
+
+Still I Rise is an online jumping game inspired by Tupac Shakur and the TUPIT program.  
+You climb upward through an endless tower of platforms, collect good items, avoid harmful ones, and “rise” as far as possible. The game blends platformer mechanics with visual symbolism drawn from themes of resilience and social barriers.
+
+This project is built in **React + TypeScript + Vite**, with custom SVG assets, dynamic platform generation, and game physics engineered for smooth and responsive gameplay.
+
+---
+
+## 🎮 Features
+- Dynamic platform generation (Doodle Jump–style infinite climb)
+- Good vs. bad collectibles system (hearts, books, broken hearts, etc.)
+- TUPIT mode with alternate rules
+- Custom SVG assets & icons
+- Smooth movement & physics engine
+- Fully responsive for web + mobile browsers
+
+---
+
+## 🚀 Live Demo  
+**Play Now:**  
+👉 https://tupac-jumping-game.vercel.app
+
+---
+
+## 🧠 Inspiration  
+The game’s concept draws from themes in Tupac’s work — rising above structural barriers, confronting harm, and finding resilience.  
+Symbols like books, hearts, and broken hearts reflect pathways and obstacles inspired by TUPIT program interviews and course discussions.
+
+---
+
+## 🛠 Tech Stack
+- **React** + **TypeScript**
+- **Vite**
+- **Lucide Icons** + custom SVGs
+- **CSS animations**
+- **Vercel** for hosting and continuous deployment
+
+---
+
+## 📦 Local Development
+
+```bash
+git clone https://github.com/SenriNakamura/Tupac_Jumping_Game.git
+cd Tupac_Jumping_Game
+npm install
+npm start

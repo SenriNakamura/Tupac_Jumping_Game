@@ -15,7 +15,7 @@ import React from "react";
 import { BrokenHeart } from "./BrokenHeart";
 import hilaryPic from "../assets/hbinda_headshot.jpeg";
 import davidPic from "../assets/David-Delvalle-Headshot.png";
-
+import tupitLogo from "../assets/TUPIT_2_color.png";
 
 interface Props {
   onBack: () => void;
@@ -66,14 +66,13 @@ export function StillIRiseExplanationPage({ onBack }: Props) {
                 <p className="mt-3">
                   I created this interactive game as my final project for{" "}
                   <span className="italic">Revolutionary Rhymes: Tupac Shakur and the Study of Society</span>{" "}
-                  instructed by Professor Deion M. Owens, AM. Instead of using slides to discuss
-                  intergenerational trauma, mass incarceration, schooling, and inequality, this game asks players to
-                  climb through those themes with their hands, not only their heads.
+                  instructed by Professor Deion M. Owens, AM. I made this ethnographic project to explore how people navigate structural inequality, carceral systems, and opportunities for transformation, drawing on course theory and the insights I gathered through my interviews with TUPIT educators. 
+                  This work reflects on the critical themes and social commentary discussed in Tupac Shakur’s music, utilizing his lyrical insights to inform the game's design. This game invites players to actively climb through themes of intergenerational trauma, mass incarceration, schooling, and inequality—engaging with them through action as well as understanding.
                 </p>
 
                 <p className="mt-3">
                   Tupac often argued that traditional schooling did not prepare young people for the real world.
-                  In a 1992 interview he said,{" "}
+                  In a 1988 interview he said,{" "}
                   <span className="italic">
                     “We’re not being taught to deal with the world as it is. We are being taught to deal with this
                     fairy land that we’re not even living in anymore.”
@@ -82,7 +81,7 @@ export function StillIRiseExplanationPage({ onBack }: Props) {
                 </p>
 
                 <p className="mt-3">
-                  The title <span className="italic">Still I Rise</span> echoes Tupac’s song and Maya Angelou’s poem.
+                  The title <span className="italic">Still I Rise</span> echoes Tupac’s song.
                   It highlights the persistence required to keep rising even when systems are structured to pull you
                   back down.
                 </p>
@@ -136,6 +135,20 @@ export function StillIRiseExplanationPage({ onBack }: Props) {
                   </p>
                 </div>
               </div>
+              {/* TUPIT Explanation + Logo */}
+              <div className="mt-4 flex items-center gap-4">
+                <img
+                  src={tupitLogo}
+                  alt="TUPIT logo"
+                  className="w-28 h-auto object-contain rounded-md border border-slate-200 bg-white p-2 shadow-sm"
+                />
+                <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 shadow-sm">
+                  <p className="font-semibold text-xs">Tufts University Prison Initiative (TUPIT)</p>
+                  <p className="text-xs mt-1 text-slate-600 leading-relaxed">
+                   provides transformative college-level education for incarcerated and on-campus students, fostering critical thinking, civic engagement, and community.
+                  </p>
+                </div>
+              </div>
 
                 <p className="mt-3">
                   Their insights shaped the “hard path” design and the TUPIT power-up, showing how education
@@ -143,42 +156,98 @@ export function StillIRiseExplanationPage({ onBack }: Props) {
                 </p>
               </div>
               </div>
-              <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-              {/* --- 03 Split Screen --- */}
-              <div>
+              {/* --- 03 · Two Screens, Two Social Worlds --- */}
+             
+              <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm mt-6">
                 <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-slate-400">
                   03 · Two Screens, Two Social Worlds
                 </p>
 
                 <h2 className="mt-2 text-base font-semibold">Visualizing Unequal Worlds</h2>
 
-                <p className="mt-3">
-                  The split screen converts Tupac’s dualities into gameplay. The left side represents relative
-                  stability; the right side represents instability shaped by criminalization and surveillance.
+                <p className="mt-3 text-sm text-slate-800 leading-relaxed">
+                  The split-screen converts Tupac’s dualities into gameplay. The left side represents relative
+                  stability; the right side represents instability shaped by criminalization, surveillance,
+                  and structural inequality. The design reflects how two people can share the same city, the
+                  same moment, and the same nation—yet live in entirely different realities.
                 </p>
 
-                <p className="mt-3">
-                  In <span className="italic">Changes</span>, he raps:
-                  <br />
-                  <span className="italic">“I’m tired of bein’ poor and even worse I’m Black.”</span>
-                </p>
-              </div>
-              </div>
-              <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-              {/* --- 04 Upward Mobility --- */}
-              <div>
-                <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-slate-400">
-                  04 · Vertical Climb as Upward Mobility
+                <p className="mt-3 text-sm text-slate-800 leading-relaxed">
+                  In <span className="italic">Changes</span>, he raps:<br />
+                  <span className="italic">“I’m tired of bein’ poor and, even worse — I’m Black.”</span><br />
+                  This line exposes how race, poverty, and limited opportunity collide to shape unequal day-to-day
+                  experiences—even among people occupying the same physical world.
                 </p>
 
-                <h2 className="mt-2 text-base font-semibold">Trying to Rise While the World Pushes Back</h2>
+                <p className="mt-3 text-sm text-slate-800 leading-relaxed">
+                  This idea echoed strongly in my interview with David Delvalle. When discussing fairness,
+                  he emphasized that too many people imagine inequality as something distant, affecting
+                  “others.” He pushed back on that: people incarcerated or navigating reentry are not living
+                  in a separate universe—they are part of the same society. As he put it, people often see
+                  prison education as a “free” gift, without recognizing that incarcerated students have
+                  already “paid in decades, in bullets, in crimes, in time taken from them.” 
+                  {/* :contentReference[oaicite:0]{index=0} */}
+                </p>
 
-                <p className="mt-3">
-                  Jumping upward represents upward mobility. Stable platforms on the left reflect supportive
-                  conditions; shifting platforms on the right reflect structural instability.
+                <p className="mt-3 text-sm text-slate-800 leading-relaxed">
+                  His point shows that the two sides of the game are not fantasy—they mirror real-world
+                  divides produced by structures, not personal failure. We inhabit the same world, but the
+                  weight placed on each path is not the same.
                 </p>
               </div>
-              </div>
+
+              
+             {/* --- 04 Upward Mobility --- */}
+            <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-slate-400">
+                04 · Vertical Climb as Upward Mobility
+              </p>
+
+              <h2 className="mt-2 text-base font-semibold">Trying to Rise While the World Pushes Back</h2>
+
+              <p className="mt-3 text-sm text-slate-800 leading-relaxed">
+                Jumping upward represents upward mobility. Stable platforms on the left reflect supportive
+                conditions—access to schooling, safety, and resources—while shifting platforms on the right
+                reflect structural instability shaped by policing, poverty, and carceral control. Both players
+                move through the same vertical space, but the risk built into each side is different.
+              </p>
+
+              <p className="mt-3 text-sm text-slate-800 leading-relaxed">
+                Climbing upward is also a metaphor for living. We rise, fall, go through pain, lose things,
+                heal, and try again. The game mirrors that cycle: progress mixed with setbacks, hope mixed with
+                exhaustion, and the need to keep moving even when the ground shakes beneath you.
+              </p>
+
+              <p className="mt-3 text-sm text-slate-800 leading-relaxed">
+                The title <span className="italic">Still I Rise</span> connects to Tupac’s insistence on
+                resilience. In that song, he says “Act up if you feel me, I was born not to make it, but I did” 
+                capturing the idea that rising is not a clean victory—it’s persistence through struggle. 
+                On the right side of the screen, even small mistakes can send you crashing down, reflecting how 
+                instability can turn every step upward into a fight.
+              </p>
+
+              <p className="mt-3 text-sm text-slate-800 leading-relaxed">
+                In <span className="italic">Keep Ya Head Up</span>, Tupac encourages people who feel forgotten:
+                <span className="italic"> “It seems the rain'll never let up I try to keep my head up, and still keep from gettin' wet up” </span>
+                In the game, that becomes the literal mechanic—looking up, jumping up, and pushing upward even
+                when the platforms are narrow, moving, or uncertain.
+              </p>
+
+              <p className="mt-3 text-sm text-slate-800 leading-relaxed">
+                In <span className="italic">Me Against the World</span>, Tupac admits:
+                <span className="italic"> “Stuck in the game Me against the world, baby” </span>
+                This echoes how many players on the right side feel: trapped in instability not by choice but
+                by structure, constantly climbing just to stay in place.
+              </p>
+
+              <p className="mt-4 text-sm text-slate-800 leading-relaxed">
+                The climb in this game is not just a test of skill but a way to feel how uneven the climb of
+                life can be. We all move upward through the same sky, but not from the same ground—and not with
+                the same weight on our backs.
+              </p>
+            </div>
+
+
             </section>
 
             {/* RIGHT SIDE — DARK PANEL, NO GRADIENT */}
@@ -187,7 +256,7 @@ export function StillIRiseExplanationPage({ onBack }: Props) {
               {/* COLLECTIBLES CARD */}
               <div className="rounded-xl border border-slate-700 bg-slate-900/60 p-4">
                 <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-slate-400">
-                  Collectibles
+                  05 · Collectibles
                 </p>
 
                 {/* GOOD COLLECTIBLES */}
@@ -207,8 +276,8 @@ export function StillIRiseExplanationPage({ onBack }: Props) {
                   />
                   <CollectibleRow
                     icon={<DollarSign className="h-4 w-4 text-white" />}
-                    title="Dollar Sign – Predatory Costs"
-                    body="Debt, fines, and fees that drain resources instead of investing in you."
+                    title="Dollar Sign – Economic Stability"
+                    body="Savings, steady income, or supportive aid. Money creates possibility instead of pressure."
                   />
                 </div>
 
@@ -221,7 +290,7 @@ export function StillIRiseExplanationPage({ onBack }: Props) {
                   <CollectibleRow
                     icon={<Syringe className="h-4 w-4 text-white" />}
                     title="Syringe – Criminalized Drug Use"
-                    body="Echoes how addiction is punished instead of treated as a health issue, repeating Afeni and Tupac’s story."
+                    body="Echoes how addiction is punished instead of treated as a health issue."
                   />
                   <CollectibleRow
                     icon={<Skull className="h-4 w-4 text-white" />}
@@ -235,16 +304,62 @@ export function StillIRiseExplanationPage({ onBack }: Props) {
                   />
                   <CollectibleRow
                     icon={<Baby className="h-4 w-4 text-white" />}
-                    title="Car – Systemic Obstacles"
-                    body="Police stops, surveillance, and over-policing that can derail the climb at any moment."
+                    title="Baby – Cycles of Neglect & Vulnerability"
+                    body="Young people facing adult burdens without support — echoing themes in Brenda’s Got a Baby."
                   />
                 </div>
               </div>
+              {/* TUPIT Power-Up */}
+              <div className="rounded-xl border border-slate-700 bg-slate-800 p-4 text-sm text-slate-300 leading-relaxed">
+                <p className="uppercase tracking-widest text-slate-400 text-[11px] font-semibold">
+                  06 · TUPIT Power-Up
+                </p>
+
+                <div className="mt-2 flex items-center gap-3">
+                  <img
+                    src={tupitLogo}
+                    alt="TUPIT logo"
+                    className="h-6 w-auto object-contain opacity-90"
+                  />
+                  <p className="font-semibold text-slate-100">Education as Opportunity</p>
+                </div>
+
+                <p className="mt-2">
+                  On the hard path, activating the TUPIT power-up generates book collectibles above the
+                  player—symbolizing how programs like TUPIT open academic pathways in environments shaped by
+                  surveillance and instability. Players can click the TUPIT logo during the climb to activate this
+                  power-up.
+                </p>
+
+                <p className="mt-2">
+                  When I interviewed David Delvalle, he emphasized that prison education is not charity. People
+                  entering TUPIT have already “paid in decades, in bullets, in time taken from them,” he said, and
+                  they earn their place through the same academic discipline expected on campus. Education is not
+                  a gift—it is a right, and a way to reclaim dignity.
+                </p>
+
+                <p className="mt-2">
+                  Hilary Binda added that TUPIT works because it treats incarcerated students as full intellectual
+                  peers. Courses are shaped with students, not just for them, creating a learning space built on
+                  respect rather than rescue.
+                </p>
+
+                <p className="mt-2">
+                  At the same time, programs like TUPIT don’t magically erase the larger
+                  systems of inequality surrounding their students. Education can open doors, but the structural
+                  barriers of reentry, stigma, policing, and poverty don’t simply disappear.
+                </p>
+
+                <p className="mt-2 italic text-slate-400">
+                  The power-up reflects their shared message: even on the hardest climb, one real opportunity can
+                  shift what feels possible—while reminding us that the climb itself is still uneven.
+                </p>
+              </div>
 
               {/* Hearts section – matched to in-game visuals */}
-              <div className="rounded-xl border border-slate-700 bg-slate-800 p-4 text-xs">
-                <p className="font-semibold uppercase text-slate-400 tracking-widest text-[10px]">
-                  Emotional Feedback
+              <div className="rounded-xl border border-slate-700 bg-slate-800 p-4 text-sm">
+                <p className="font-semibold uppercase text-slate-400 tracking-widest text-[11px]">
+                  07 · Emotional Feedback
                 </p>
 
                 {/* GOOD HEART: bright red, glowing, floating up */}
@@ -282,27 +397,40 @@ export function StillIRiseExplanationPage({ onBack }: Props) {
                 </p>
               </div>
 
+            {/* 08 · Why a Game, Not Just an Essay */}
+            <div className="rounded-xl border border-slate-700 bg-slate-800 p-4 text-sm text-slate-300 leading-relaxed mt-8">
+              <p className="uppercase tracking-widest text-slate-400 text-[11px] font-semibold">
+                08 · Why a Game, Not Just an Essay
+              </p>
 
-              {/* Why a Game */}
-              <div className="rounded-xl border border-slate-700 bg-slate-800 p-4 text-xs text-slate-300 leading-relaxed">
-                <p className="uppercase tracking-widest text-slate-400 text-[10px] font-semibold">
-                  Why a Game, Not Just an Essay
-                </p>
+              <p className="mt-2">
+                Hip hop is embodied and interactive. Tupac didn’t just describe the world; he made people feel it. 
+                This game tries to do something similar with theory and interviews, turning concepts about inequality
+                into a climb you experience in your hands—jumping, falling, and sensing how uneven the paths can be.
+              </p>
 
-                <p className="mt-2">
-                  Hip hop is embodied and interactive. This game translates theory, interviews, and Tupac’s
-                  critiques into a playable world you feel rather than just read.
-                </p>
+              <p className="mt-2">
+                In his 1988 interview, Tupac explained that his mother raised him with “no lies… everything is real,”
+                because hiding the bad only makes it “overwhelming” later. He said young people are “given a horrible 
+                world… left in bad shape for us to fix up,” and that adults fail to prepare them by teaching a “fairy land
+                we’re not even living in anymore.” That’s why he raps about violence, poverty, and inequality—because telling
+                the truth is the only way people can understand the world they’re inheriting.
+              </p>
 
-                <p className="mt-2 italic text-slate-400">
-                  “Keep Ya Head Up” becomes the game’s core mechanic—keep rising even when the world pushes down.
-                </p>
-              </div>
+              <p className="mt-2">
+                I wanted to follow that same impulse in a medium I know. Tupac expressed truth through rap; I express it through
+                engineering and interactive design. This game is my way of making his critiques felt, not just studied—inviting players
+                to inhabit, even briefly, the difficult climb he described so clearly at seventeen.
+              </p>
+            </div>
+
+
+
 
               {/* REFERENCES */}
-              <div className="mt-8 rounded-xl border border-slate-700 bg-slate-800 p-4 text-xs text-slate-300 leading-relaxed">
-                <p className="uppercase tracking-widest text-slate-400 text-[10px] font-semibold mb-2">
-                  References
+              <div className="mt-8 rounded-xl border border-slate-700 bg-slate-800 p-4 text-sm text-slate-300 leading-relaxed">
+                <p className="uppercase tracking-widest text-slate-400 text-[11px] font-semibold mb-2">
+                  09 · References
                 </p>
 
                 <ul className="space-y-1">
@@ -317,7 +445,29 @@ export function StillIRiseExplanationPage({ onBack }: Props) {
                       Listen here
                     </a>
                   </li>
+                  <li>
+                    • Shakur, Tupac. <span className="italic">Keep Ya Head Up</span>.{" "}
+                    <a
+                      href="https://www.youtube.com/watch?v=SHVzWMFMH6Y&list=RDSHVzWMFMH6Y&start_radio=1"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-slate-400 underline hover:text-slate-300"
+                    >
+                      Listen here
+                    </a>
+                  </li>
 
+                  <li>
+                    • Shakur, Tupac. <span className="italic">Me Against the World</span>.{" "}
+                    <a
+                      href="https://www.youtube.com/watch?v=hNXdOhwVAhk&list=RDhNXdOhwVAhk&start_radio=1"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-slate-400 underline hover:text-slate-300"
+                    >
+                      Listen here
+                    </a>
+                  </li>
                   <li>
                     • Shakur, Tupac. <span className="italic">Changes</span>.  
                     <a
@@ -365,7 +515,7 @@ export function StillIRiseExplanationPage({ onBack }: Props) {
                       rel="noopener noreferrer"
                       className="ml-1 text-slate-400 underline hover:text-slate-300"
                     >
-                      Faculty Page
+                      LinkedIn
                     </a>
                   </li>
 
@@ -379,16 +529,50 @@ export function StillIRiseExplanationPage({ onBack }: Props) {
                       (private interview data)
                     </a>
                   </li>
+                  <li>
+                    • Binda, Hilary — Executive Director, Tufts University Prison Initiative.  
+                    <a
+                      href="https://tischcollege.tufts.edu/people/faculty/hilary-binda"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-slate-400 underline hover:text-slate-300"
+                    >
+                      Faculty Page
+                    </a>
+                  </li>
+
+                  <li>
+                    • Delvalle, David — Education & Reentry Director, TUPIT / MyTERN.  
+                    <a
+                      href="https://tischcollege.tufts.edu/people/staff/david-delvalle"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-slate-400 underline hover:text-slate-300"
+                    >
+                      Staff Page
+                    </a>
+                  </li>
+                  <li>
+                    • Tupac Shakur. <span className="italic">Interview</span> (1988).  
+                    <a
+                      href="https://www.youtube.com/watch?v=WNvxNMpt43A"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-slate-400 underline hover:text-slate-300"
+                    >
+                      Watch interview
+                    </a>
+                  </li>
                 </ul>
               </div>
 
               {/* FOOTER DISCLAIMER */}
-              <div className="mt-12 border-t border-slate-300 pt-3">
-                <p className="text-[10px] text-slate-500 tracking-wide text-center leading-relaxed">
+              <div className="mt-12 border-t border-slate-300 pt-4">
+                <p className="text-[12px] text-slate-500 tracking-wide text-center leading-relaxed">
                   This game is a conceptual educational project designed to visualize themes of structural inequality,
-                  mobility, and carceral systems for academic study. All visual elements are metaphorical and do not
-                  depict or imply characteristics of any specific group or individual. The design is intended solely to
-                  support critical reflection within the course context.
+                  mobility, and carceral systems for academic study. All visual elements and characters are metaphorical
+                  and do not depict or imply traits, behaviors, or identities of any specific racial, ethnic, or social
+                  group. The design is intended solely to support critical reflection within the context of the course.
                 </p>
               </div>
 

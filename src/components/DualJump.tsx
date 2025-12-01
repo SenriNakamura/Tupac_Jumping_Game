@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import { BrokenHeart } from "./BrokenHeart";
 import { PlayerStickFigure } from "./PlayerStickFigure";
-import tupitLogo from "../assets/tupit-logo-1920x768.png";
+import tupitLogo from "../assets/TUPIT_2_color.png";
 import { SyringeIcon } from "@/components/ui/syringe-icon";
 import { StillIRiseExplanationPage } from "./StillIRiseExplanation";
 
@@ -728,10 +728,10 @@ export function DualJump() {
                 style={{
                   height: "34px",
                   width: "auto",
-                  opacity: tupitActivated ? 1 : 0.35,
+                  opacity: tupitActivated ? 1 : 0.6,
                   filter: tupitActivated
                     ? "none"
-                    : "grayscale(100%) brightness(60%)",
+                    : "grayscale(90%) brightness(90%)",
                   display: "block",
                 }}
               />
